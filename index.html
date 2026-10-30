@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BioPathway Master - USMLE & Biochemistry Drill</title>
+  <title>BioPathway Master - Interactive Biochemistry Trainer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-feature-settings: "palt" 1;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -19,8 +19,8 @@
       font-family: 'JetBrains Mono', monospace;
     }
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
       background: #090d16;
@@ -29,11 +29,8 @@
       background: #1e293b;
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
-    }
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.85);
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -49,413 +46,471 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950">
 
-  <!-- Header -->
-  <header class="glass-panel sticky top-0 z-40 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+  <!-- Minimal Header -->
+  <header class="glass-card sticky top-0 z-40 border-b border-slate-800/80 px-3 sm:px-6 py-2.5">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
       
-      <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-slate-950 font-black text-xl font-mono">
+      <!-- Brand & Pathway Selector -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black text-sm font-mono shadow-md">
           BP
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-              <span>BioPathway Master</span>
-              <span class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">USMLE Step 1</span>
-            </h1>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-sm font-bold tracking-tight text-white">BioPathway</h1>
+            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PRO</span>
           </div>
-          <p id="header-subtitle" class="text-xs text-slate-400">Interactive Active-Recall & Metabolic Flow</p>
-        </div>
-      </div>
-
-      <!-- Main Navigation Buttons (3 Modes) -->
-      <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
-        <button 
-          id="tab-mode-drill" 
-          type="button"
-          onclick="switchAppMode('drill')"
-          class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 font-bold shadow"
-        >
-          <span>✍️</span>
-          <span id="tab-text-drill">Spelling Drill</span>
-        </button>
-        <button 
-          id="tab-mode-explore" 
-          type="button"
-          onclick="switchAppMode('explore')"
-          class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200"
-        >
-          <span>🔍</span>
-          <span id="tab-text-explore">Explore Pathway</span>
-        </button>
-        <button 
-          id="tab-mode-molecular" 
-          type="button"
-          onclick="switchAppMode('molecular')"
-          class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200"
-        >
-          <span>🎬</span>
-          <span id="tab-text-molecular">Molecular Motion</span>
-        </button>
-      </div>
-
-      <!-- Language Toggle (Segmented 2-Button) & Pathway Selector -->
-      <div class="flex items-center gap-2.5">
-        
-        <!-- Language Switcher: 2 Clear Prominent Buttons -->
-        <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-700 text-xs shadow-inner">
-          <button 
-            id="btn-lang-en" 
-            type="button" 
-            onclick="setLanguage('en')" 
-            class="px-3 py-1.5 rounded-lg font-bold transition-all bg-emerald-500 text-slate-950 shadow flex items-center gap-1.5"
-          >
-            <span>🇺🇸</span>
-            <span>English</span>
-          </button>
-          <button 
-            id="btn-lang-ja" 
-            type="button" 
-            onclick="setLanguage('ja')" 
-            class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5"
-          >
-            <span>🇯🇵</span>
-            <span>日本語</span>
-          </button>
         </div>
 
-        <!-- Pathway Selector -->
+        <!-- Pathway Selector Dropdown -->
         <select 
           id="select-pathway" 
           onchange="onPathwayChanged(this.value)"
-          class="bg-slate-900 text-xs font-medium text-slate-200 border border-slate-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-400"
+          class="ml-1 sm:ml-2 bg-slate-900/90 text-xs font-semibold text-slate-200 border border-slate-700/80 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none focus:border-emerald-400"
         >
-          <option value="glycolysis">Glycolysis (10 steps)</option>
-          <option value="tca">TCA / Krebs Cycle (8 steps)</option>
+          <option value="glycolysis">Glycolysis (10)</option>
+          <option value="tca">TCA Cycle (8)</option>
+          <option value="gluconeogenesis">Gluconeogenesis (4)</option>
+          <option value="hmp">HMP Shunt (4)</option>
         </select>
+      </div>
 
+      <!-- Quick Controls & Menu -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Sound Toggle -->
+        <button 
+          id="btn-sound-toggle"
+          type="button" 
+          onclick="toggleSound()" 
+          title="Sound Effects"
+          class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-xs hover:border-slate-700 text-slate-300 transition-all"
+        >
+          <span id="sound-icon">🔊</span>
+        </button>
+
+        <!-- Language Toggle -->
+        <button 
+          id="btn-lang-toggle" 
+          type="button" 
+          onclick="toggleLanguage()" 
+          title="Switch Language"
+          class="h-8 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300 hover:border-slate-700 hover:text-white transition-all flex items-center gap-1 font-mono"
+        >
+          <span id="lang-flag">🇺🇸</span>
+          <span id="lang-label">EN</span>
+        </button>
+
+        <!-- Anki Export Quick Button -->
+        <button 
+          type="button" 
+          onclick="exportToAnkiCSV()" 
+          title="Download Anki Flashcard Deck (.csv)"
+          class="h-8 px-2.5 rounded-lg bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-bold hover:bg-indigo-900 transition-all hidden sm:flex items-center gap-1"
+        >
+          <span>📥</span>
+          <span>Anki</span>
+        </button>
+
+        <!-- More Menu Toggle (Mobile Anki & Extra Info) -->
+        <button 
+          type="button" 
+          onclick="toggleSettingsDrawer()" 
+          title="Settings & Tools"
+          class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-xs hover:border-slate-700 text-slate-300 transition-all sm:hidden"
+        >
+          ⚙️
+        </button>
       </div>
 
     </div>
   </header>
 
-  <!-- Energy Dashboard -->
-  <section class="bg-slate-900/60 border-b border-slate-800/80 px-4 py-2">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-      <div class="flex items-center gap-2">
-        <span id="label-net-yield" class="text-slate-400 font-medium">Pathway Yield Counter:</span>
-        <span id="badge-phase" class="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20">
-          Preparatory Phase (-2 ATP)
-        </span>
+  <!-- Clean Sub-Navigation (4 Modes as Subtle Pills) -->
+  <nav class="bg-slate-900/40 border-b border-slate-800/60 px-3 sm:px-6 py-1.5">
+    <div class="max-w-4xl mx-auto flex items-center justify-between text-xs">
+      
+      <!-- Mode Switcher -->
+      <div class="flex items-center gap-1 font-medium">
+        <button 
+          id="tab-mode-drill" 
+          type="button" 
+          onclick="switchAppMode('drill')"
+          class="px-2.5 py-1 rounded-md transition-all font-bold bg-emerald-500 text-slate-950 shadow-sm"
+        >
+          ✍️ <span id="tab-text-drill">Practice</span>
+        </button>
+        <button 
+          id="tab-mode-explore" 
+          type="button" 
+          onclick="switchAppMode('explore')"
+          class="px-2.5 py-1 rounded-md transition-all text-slate-400 hover:text-slate-200"
+        >
+          📖 <span id="tab-text-explore">Roadmap</span>
+        </button>
+        <button 
+          id="tab-mode-molecular" 
+          type="button" 
+          onclick="switchAppMode('molecular')"
+          class="px-2.5 py-1 rounded-md transition-all text-slate-400 hover:text-slate-200"
+        >
+          🎬 <span id="tab-text-molecular">Dynamics</span>
+        </button>
+        <button 
+          id="tab-mode-case" 
+          type="button" 
+          onclick="switchAppMode('case')"
+          class="px-2.5 py-1 rounded-md transition-all text-amber-400 hover:text-amber-300"
+        >
+          🏥 <span id="tab-text-case">Case</span>
+        </button>
       </div>
-      <div class="flex items-center gap-4 font-mono font-semibold">
-        <div class="flex items-center gap-1.5">
-          <span class="text-slate-400">Net ATP:</span>
-          <span id="meter-atp" class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-emerald-400 text-sm font-bold">0</span>
+
+      <!-- Compact Progress & Combo -->
+      <div class="flex items-center gap-2.5 font-mono text-[11px]">
+        <div class="flex items-center gap-1 text-amber-400 font-bold" id="box-combo">
+          <span>🔥</span>
+          <span id="meter-combo">0</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="text-slate-400">NADH:</span>
-          <span id="meter-nadh" class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-cyan-400 text-sm font-bold">0</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span id="label-progress" class="text-slate-400">Progress:</span>
-          <span id="meter-progress" class="text-amber-400 font-bold">1 / 10</span>
+        <div class="text-slate-400">
+          <span id="meter-step-badge" class="font-bold text-slate-200">1</span>/<span id="meter-step-total">10</span>
         </div>
       </div>
+
     </div>
-  </section>
+  </nav>
 
-  <!-- Main Body Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-    
-    <!-- Left Column: Pathway Map Flow -->
-    <div class="lg:col-span-5 flex flex-col gap-3">
-      <div class="flex items-center justify-between">
-        <h2 id="title-pathway-flow" class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-          <span>Metabolic Roadmap</span>
-        </h2>
-        <span id="flow-hint" class="text-[11px] text-slate-500">Click any step to inspect</span>
+  <!-- Main Focus Container (Max 800px Centered for Ultimate Clarity) -->
+  <main class="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 w-full">
+
+    <!-- ================= VIEW 1: SPELLING ACTIVE RECALL (THE HERO) ================= -->
+    <div id="view-drill" class="space-y-4 sm:space-y-5">
+      
+      <!-- Step Context Bar (Minimal & Focused) -->
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+        <div class="flex items-center gap-2">
+          <!-- Navigation arrows to freely switch steps -->
+          <div class="flex items-center bg-slate-900 rounded-lg border border-slate-800 p-0.5">
+            <button type="button" onclick="advanceStep(-1)" class="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-white text-xs font-bold">◀</button>
+            <span id="badge-step-number" class="px-2 text-xs font-mono font-bold text-emerald-400">Step 1</span>
+            <button type="button" onclick="advanceStep(1)" class="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-white text-xs font-bold">▶</button>
+          </div>
+          <span id="badge-carbon" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold">C6</span>
+          <span id="badge-reversibility" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-300 border border-rose-500/20">★ Irreversible</span>
+        </div>
+
+        <!-- 3-Level Active Recall Hint -->
+        <div class="flex items-center bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-[11px] font-semibold">
+          <button type="button" onclick="setHintLevel('blind')" id="btn-hint-blind" class="px-2 py-0.5 rounded bg-emerald-400 text-slate-950 font-bold shadow transition-all">🔒 Blanks</button>
+          <button type="button" onclick="setHintLevel('clue')" id="btn-hint-clue" class="px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 transition-all">💡 Hint</button>
+          <button type="button" onclick="setHintLevel('reveal')" id="btn-hint-reveal" class="px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 transition-all">👁️ Show</button>
+        </div>
       </div>
 
-      <!-- Scrollable Steps List -->
-      <div id="pathway-flow-container" class="space-y-2 max-h-[750px] overflow-y-auto pr-1">
+      <!-- Enzyme Prompt -->
+      <div class="text-center py-1">
+        <div class="text-xs text-slate-400 font-medium" id="label-catalyzing-enzyme">Catalyzing Enzyme:</div>
+        <h2 id="current-enzyme-name" class="text-lg sm:text-2xl font-bold text-white mt-0.5 tracking-tight">
+          Hexokinase / Glucokinase
+        </h2>
+      </div>
+
+      <!-- Target Display (Masked or Hinted) -->
+      <div class="text-center">
+        <div id="target-molecule-display" class="text-base sm:text-xl font-bold font-mono text-emerald-400 tracking-wide min-h-[28px]">
+          ???
+        </div>
+      </div>
+
+      <!-- Wordle-style Interactive Letter Skeleton -->
+      <div class="flex justify-center">
+        <div 
+          id="spelling-skeleton" 
+          onclick="focusNativeInput()"
+          class="flex flex-wrap justify-center gap-1 sm:gap-1.5 p-3 rounded-2xl bg-slate-900/90 border-2 border-slate-800 hover:border-slate-700 cursor-text select-none min-h-[56px] max-w-full"
+        >
+          <!-- Dynamic Tiles with emerald cursor -->
+        </div>
+      </div>
+
+      <!-- Native Input & Submit Form -->
+      <div class="max-w-md mx-auto">
+        <form id="form-typing" onsubmit="handleSpellSubmit(event)">
+          <div class="relative flex items-center">
+            <input 
+              type="text" 
+              id="input-spell" 
+              autocomplete="off" 
+              autocorrect="off" 
+              autocapitalize="off" 
+              spellcheck="false"
+              oninput="onInputChanged(this.value)"
+              onclick="syncCursorWithInput()"
+              onkeyup="syncCursorWithInput()"
+              placeholder="Type spelling or tap keys below..."
+              class="w-full bg-slate-900 text-white font-mono text-sm sm:text-base px-3.5 py-2.5 rounded-xl border-2 border-slate-700 focus:border-emerald-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all placeholder:text-slate-500"
+            />
+            <button 
+              type="submit" 
+              id="btn-submit"
+              class="absolute right-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold rounded-lg transition-all text-xs shadow"
+            >
+              Enter ↵
+            </button>
+          </div>
+        </form>
+        <div id="feedback-message" class="text-xs font-semibold text-center mt-1.5 min-h-[18px]"></div>
+      </div>
+
+      <!-- Virtual Keyboard (Compact & Tactile) -->
+      <div id="virtual-keyboard" class="max-w-md mx-auto p-1.5 sm:p-2 bg-slate-900/80 border border-slate-800 rounded-xl select-none">
+        <div class="flex justify-center gap-1 mb-1">
+          <button type="button" onclick="pressVirtualKey('Q')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">Q</button>
+          <button type="button" onclick="pressVirtualKey('W')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">W</button>
+          <button type="button" onclick="pressVirtualKey('E')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">E</button>
+          <button type="button" onclick="pressVirtualKey('R')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">R</button>
+          <button type="button" onclick="pressVirtualKey('T')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">T</button>
+          <button type="button" onclick="pressVirtualKey('Y')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">Y</button>
+          <button type="button" onclick="pressVirtualKey('U')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">U</button>
+          <button type="button" onclick="pressVirtualKey('I')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">I</button>
+          <button type="button" onclick="pressVirtualKey('O')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">O</button>
+          <button type="button" onclick="pressVirtualKey('P')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">P</button>
+        </div>
+        <div class="flex justify-center gap-1 mb-1">
+          <button type="button" onclick="pressVirtualKey('A')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">A</button>
+          <button type="button" onclick="pressVirtualKey('S')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">S</button>
+          <button type="button" onclick="pressVirtualKey('D')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">D</button>
+          <button type="button" onclick="pressVirtualKey('F')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">F</button>
+          <button type="button" onclick="pressVirtualKey('G')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">G</button>
+          <button type="button" onclick="pressVirtualKey('H')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">H</button>
+          <button type="button" onclick="pressVirtualKey('J')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">J</button>
+          <button type="button" onclick="pressVirtualKey('K')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">K</button>
+          <button type="button" onclick="pressVirtualKey('L')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">L</button>
+        </div>
+        <div class="flex justify-center gap-1">
+          <button type="button" onclick="deleteVirtualKey()" class="px-2.5 py-1.5 bg-rose-950/70 border border-rose-500/40 hover:bg-rose-900 active:bg-rose-600 text-rose-300 rounded text-xs font-bold font-mono">⌫ Del</button>
+          <button type="button" onclick="pressVirtualKey('Z')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">Z</button>
+          <button type="button" onclick="pressVirtualKey('X')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">X</button>
+          <button type="button" onclick="pressVirtualKey('C')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">C</button>
+          <button type="button" onclick="pressVirtualKey('V')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">V</button>
+          <button type="button" onclick="pressVirtualKey('B')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">B</button>
+          <button type="button" onclick="pressVirtualKey('N')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">N</button>
+          <button type="button" onclick="pressVirtualKey('M')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">M</button>
+          <button type="button" onclick="pressVirtualKey('-')" class="vk-key px-2 sm:px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">-</button>
+          <button type="button" onclick="pressVirtualKey(' ')" class="vk-key px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded text-xs font-mono font-bold text-slate-200">Space</button>
+        </div>
+      </div>
+
+      <!-- Minimal Clinical Pearl Card (Uncluttered) -->
+      <div class="max-w-md mx-auto p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-amber-400 font-bold flex items-center gap-1">
+            <span>⚡ High-Yield:</span>
+            <span id="badge-disease" class="text-slate-300 font-normal">MODY 2</span>
+          </span>
+          <span id="label-net-summary" class="text-[11px] font-mono text-emerald-400 font-semibold">-1 ATP</span>
+        </div>
+        <p id="pearl-description" class="text-xs text-slate-400 leading-relaxed">
+          Glucokinase acts as a glucose sensor in beta-cells. Inactivating mutations cause MODY 2.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ================= VIEW 2: FULL ROADMAP (Clean Reference) ================= -->
+    <div id="view-explore" class="hidden space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h2 id="title-explore-panel" class="text-base font-bold text-white flex items-center gap-2">
+          <span>📖 Pathway Roadmap</span>
+        </h2>
+        <span class="text-xs text-slate-400">Click any step to practice</span>
+      </div>
+      <div id="explore-full-list" class="space-y-2">
         <!-- Rendered dynamically -->
       </div>
     </div>
 
-    <!-- Right Column: Interactive Area (Switches by Mode) -->
-    <div class="lg:col-span-7 flex flex-col gap-4">
-
-      <!-- VIEW 1: SPELLING ACTIVE RECALL DRILL (Default) -->
-      <div id="view-drill" class="glass-panel p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl space-y-5">
-        
-        <!-- Step Header & Active Recall Toggle -->
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
-          <div>
-            <div class="flex items-center gap-2">
-              <span id="badge-step-number" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold border border-emerald-500/30">Step 1</span>
-              <span id="badge-carbon" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold border border-slate-700">C6</span>
-              <span id="badge-reversibility" class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/10 text-rose-300 border border-rose-500/20">★ Irreversible</span>
-            </div>
-            <h3 id="current-enzyme-name" class="text-base sm:text-lg font-bold text-white mt-1.5 flex items-center gap-1.5">
-              Hexokinase / Glucokinase
-            </h3>
-          </div>
-
-          <!-- 3-stage Recall Hint Toggle -->
-          <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
-            <button 
-              type="button" 
-              onclick="setHintLevel('blind')" 
-              id="btn-hint-blind" 
-              class="px-2.5 py-1 rounded-lg text-slate-950 bg-emerald-400 font-bold shadow transition-all"
-            >
-              🔒 Blanks
-            </button>
-            <button 
-              type="button" 
-              onclick="setHintLevel('clue')" 
-              id="btn-hint-clue" 
-              class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-semibold"
-            >
-              💡 Hint
-            </button>
-            <button 
-              type="button" 
-              onclick="setHintLevel('reveal')" 
-              id="btn-hint-reveal" 
-              class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-semibold"
-            >
-              👁️ Show
-            </button>
-          </div>
-        </div>
-
-        <!-- Target Molecule Prompt -->
+    <!-- ================= VIEW 3: CELLULAR DYNAMICS ================= -->
+    <div id="view-molecular" class="hidden space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <div>
-          <div class="text-xs text-slate-400 mb-1 font-medium" id="label-target-molecule">Name the intermediate / metabolite:</div>
-          <div id="target-molecule-display" class="text-xl sm:text-2xl font-bold font-mono text-emerald-400 tracking-wide min-h-[32px]">
-            ???
-          </div>
+          <h2 id="title-molecular-panel" class="text-base font-bold text-white">🎬 Subcellular Dynamics</h2>
+          <p id="desc-molecular" class="text-xs text-slate-400">Where this reaction occurs & molecular shifts</p>
         </div>
-
-        <!-- Tile-based Interactive Skeleton Stage -->
-        <div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-            <span id="label-letter-guide" class="font-medium">Click tile to place cursor:</span>
-            <span id="hint-letter-count" class="font-mono text-slate-400">7 letters</span>
-          </div>
-          <!-- Clickable letter tiles -->
-          <div 
-            id="spelling-skeleton" 
-            onclick="focusNativeInput()"
-            class="font-mono text-xl sm:text-2xl tracking-widest text-slate-400 flex flex-wrap gap-1.5 sm:gap-2 items-center bg-slate-900/90 p-3.5 rounded-xl border-2 border-slate-800 hover:border-slate-700 cursor-text select-none min-h-[64px]"
-          >
-            <!-- Rendered dynamically -->
-          </div>
-        </div>
-
-        <!-- Real Input Box -->
-        <div>
-          <form id="form-typing" onsubmit="handleSpellSubmit(event)">
-            <div class="relative flex items-center">
-              <input 
-                type="text" 
-                id="input-spell" 
-                autocomplete="off" 
-                autocorrect="off" 
-                autocapitalize="off" 
-                spellcheck="false"
-                oninput="onInputChanged(this.value)"
-                onclick="syncCursorWithInput()"
-                onkeyup="syncCursorWithInput()"
-                placeholder="Type spelling here or tap virtual keys below..."
-                class="w-full bg-slate-900 text-white font-mono text-base px-4 py-3 rounded-xl border-2 border-slate-700 focus:border-emerald-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all placeholder:text-slate-500"
-              />
-              <button 
-                type="submit" 
-                id="btn-submit"
-                class="absolute right-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold rounded-lg transition-all flex items-center justify-center shadow text-sm"
-              >
-                Enter ↵
-              </button>
-            </div>
-          </form>
-          <div id="feedback-message" class="text-xs font-medium mt-2 min-h-[20px] transition-all"></div>
-        </div>
-
-        <!-- On-Screen Virtual Keyboard -->
-        <div id="virtual-keyboard" class="p-2.5 bg-slate-900/80 border border-slate-800 rounded-xl select-none">
-          <div class="flex justify-center gap-1 mb-1.5 flex-wrap">
-            <button type="button" onclick="pressVirtualKey('Q')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">Q</button>
-            <button type="button" onclick="pressVirtualKey('W')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">W</button>
-            <button type="button" onclick="pressVirtualKey('E')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">E</button>
-            <button type="button" onclick="pressVirtualKey('R')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">R</button>
-            <button type="button" onclick="pressVirtualKey('T')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">T</button>
-            <button type="button" onclick="pressVirtualKey('Y')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">Y</button>
-            <button type="button" onclick="pressVirtualKey('U')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">U</button>
-            <button type="button" onclick="pressVirtualKey('I')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">I</button>
-            <button type="button" onclick="pressVirtualKey('O')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">O</button>
-            <button type="button" onclick="pressVirtualKey('P')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">P</button>
-          </div>
-          <div class="flex justify-center gap-1 mb-1.5 flex-wrap">
-            <button type="button" onclick="pressVirtualKey('A')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">A</button>
-            <button type="button" onclick="pressVirtualKey('S')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">S</button>
-            <button type="button" onclick="pressVirtualKey('D')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">D</button>
-            <button type="button" onclick="pressVirtualKey('F')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">F</button>
-            <button type="button" onclick="pressVirtualKey('G')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">G</button>
-            <button type="button" onclick="pressVirtualKey('H')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">H</button>
-            <button type="button" onclick="pressVirtualKey('J')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">J</button>
-            <button type="button" onclick="pressVirtualKey('K')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">K</button>
-            <button type="button" onclick="pressVirtualKey('L')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">L</button>
-          </div>
-          <div class="flex justify-center gap-1 flex-wrap">
-            <button type="button" onclick="deleteVirtualKey()" class="px-3.5 py-2 bg-rose-950/70 border border-rose-500/50 hover:bg-rose-900 active:bg-rose-600 text-rose-300 rounded-lg text-xs font-bold transition-colors">⌫ Del</button>
-            <button type="button" onclick="pressVirtualKey('Z')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">Z</button>
-            <button type="button" onclick="pressVirtualKey('X')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">X</button>
-            <button type="button" onclick="pressVirtualKey('C')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">C</button>
-            <button type="button" onclick="pressVirtualKey('V')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">V</button>
-            <button type="button" onclick="pressVirtualKey('B')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">B</button>
-            <button type="button" onclick="pressVirtualKey('N')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">N</button>
-            <button type="button" onclick="pressVirtualKey('M')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">M</button>
-            <button type="button" onclick="pressVirtualKey('-')" class="vk-key px-2.5 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">-</button>
-            <button type="button" onclick="pressVirtualKey(' ')" class="vk-key px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 rounded-lg text-xs font-mono font-bold text-slate-200 transition-colors shadow">Space</button>
-          </div>
-        </div>
-
-        <!-- USMLE & Clinical High-Yield Card -->
-        <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800 space-y-2">
-          <div class="flex items-center justify-between">
-            <span id="label-clinical-pearl-title" class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
-              <span>⚡ USMLE High-Yield Pearl</span>
-            </span>
-            <span id="badge-disease" class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 font-bold">
-              MODY 2
-            </span>
-          </div>
-          <p id="pearl-description" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Glucokinase has high Km (low affinity) and high Vmax, acting as a pancreatic beta-cell glucose sensor. Inactivating mutations cause MODY 2.
-          </p>
-        </div>
-
+        <span id="label-current-loc" class="px-2 py-0.5 rounded text-xs font-mono font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+          Cytosol
+        </span>
       </div>
 
-      <!-- VIEW 2: EXPLORE PATHWAY MODE -->
-      <div id="view-explore" class="hidden glass-panel p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
-          <h3 id="title-explore-panel" class="text-lg font-bold text-white flex items-center gap-2">
-            <span>📖 Full Metabolic Pathway Reference</span>
-          </h3>
-          <span class="text-xs text-slate-400">Step 1 First Aid Aligned</span>
-        </div>
-        <p id="desc-explore" class="text-xs text-slate-400 leading-relaxed">
-          Review all chemical structures, enzyme regulations, and board-relevant diseases without hiding any answers.
-        </p>
-        <div id="explore-full-list" class="space-y-3 max-h-[620px] overflow-y-auto pr-1">
-          <!-- Populated dynamically -->
-        </div>
+      <!-- Compact SVG Cell Map -->
+      <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
+        <svg viewBox="0 0 500 180" class="w-full h-36 rounded-lg bg-slate-950 border border-slate-800">
+          <rect x="0" y="0" width="500" height="180" fill="#090d16" />
+          <text x="20" y="25" fill="#64748b" font-size="11" font-family="monospace">CYTOSOL</text>
+          
+          <ellipse cx="330" cy="100" rx="150" ry="65" fill="#0f172a" stroke="#334155" stroke-width="1.5" stroke-dasharray="3,3" />
+          <text x="270" y="55" fill="#94a3b8" font-size="10" font-family="monospace">Outer Membrane</text>
+
+          <ellipse cx="330" cy="100" rx="115" ry="48" fill="#1e293b" stroke="#0284c7" stroke-width="1.5" />
+          <text x="250" y="78" fill="#38bdf8" font-size="10" font-family="monospace">Inner Membrane</text>
+
+          <ellipse cx="330" cy="100" rx="75" ry="30" fill="#0369a1" fill-opacity="0.25" stroke="#38bdf8" stroke-width="1" />
+          <text x="295" y="105" fill="#7dd3fc" font-size="11" font-weight="bold" font-family="monospace">MATRIX</text>
+
+          <g id="svg-location-pin" transform="translate(100, 90)" class="transition-all duration-500">
+            <circle cx="0" cy="0" r="12" fill="#10b981" fill-opacity="0.3" class="animate-pulse" />
+            <circle cx="0" cy="0" r="6" fill="#10b981" />
+            <circle cx="0" cy="0" r="2" fill="#ffffff" />
+            <text x="12" y="4" fill="#34d399" font-size="10" font-weight="bold" font-family="sans-serif" id="svg-pin-text">Enzyme</text>
+          </g>
+        </svg>
       </div>
 
-      <!-- VIEW 3: MOLECULAR MOTION & CELLULAR SCENE -->
-      <div id="view-molecular" class="hidden glass-panel p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-xl space-y-5">
-        <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
-          <div>
-            <h3 id="title-molecular-panel" class="text-lg font-bold text-white flex items-center gap-2">
-              <span>🎬 Molecular Dynamics & Localization</span>
-            </h3>
-            <p id="desc-molecular" class="text-xs text-slate-400 mt-0.5">Where it happens inside the cell & how molecules shift</p>
-          </div>
-          <span id="label-current-loc" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30">
-            Cytosol
-          </span>
+      <!-- Molecular Scheme Summary -->
+      <div class="grid grid-cols-3 gap-2 text-center p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+        <div class="p-2 bg-slate-950 rounded-lg">
+          <div class="text-[10px] text-slate-500 font-mono">SUBSTRATE</div>
+          <div id="anim-substrate-name" class="font-bold text-slate-200 mt-0.5">Glucose</div>
+          <div id="anim-substrate-c" class="text-[10px] font-mono text-cyan-400">C6</div>
         </div>
-
-        <!-- Cellular Localization Graphic Map -->
-        <div class="relative bg-slate-900 rounded-xl p-4 border border-slate-800 overflow-hidden">
-          <div id="label-compartment" class="text-[11px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Subcellular Compartment Map:</div>
-          <svg viewBox="0 0 500 200" class="w-full h-44 rounded-lg bg-slate-950 border border-slate-800">
-            <!-- Cell Cytosol Background -->
-            <rect x="0" y="0" width="500" height="200" fill="#090d16" />
-            <text x="20" y="30" fill="#64748b" font-size="12" font-family="monospace">CYTOSOL (Cytoplasm)</text>
-            
-            <!-- Outer Mitochondrial Membrane -->
-            <ellipse cx="320" cy="115" rx="160" ry="75" fill="#0f172a" stroke="#334155" stroke-width="2" stroke-dasharray="4,4" />
-            <text x="260" y="60" fill="#94a3b8" font-size="10" font-family="monospace">Outer Membrane</text>
-
-            <!-- Inner Mitochondrial Membrane -->
-            <ellipse cx="320" cy="115" rx="125" ry="55" fill="#1e293b" stroke="#0284c7" stroke-width="2" />
-            <text x="240" y="85" fill="#38bdf8" font-size="10" font-family="monospace">Inner Membrane</text>
-
-            <!-- Mitochondrial Matrix -->
-            <ellipse cx="320" cy="115" rx="85" ry="35" fill="#0369a1" fill-opacity="0.25" stroke="#38bdf8" stroke-width="1.5" />
-            <text x="275" y="120" fill="#7dd3fc" font-size="11" font-weight="bold" font-family="monospace">MATRIX (TCA)</text>
-
-            <!-- Live Location Pin Marker -->
-            <g id="svg-location-pin" transform="translate(100, 100)" class="transition-all duration-500">
-              <circle cx="0" cy="0" r="14" fill="#10b981" fill-opacity="0.3" class="animate-pulse" />
-              <circle cx="0" cy="0" r="7" fill="#10b981" />
-              <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
-              <text x="14" y="4" fill="#34d399" font-size="11" font-weight="bold" font-family="sans-serif" id="svg-pin-text">Hexokinase (Active)</text>
-            </g>
-          </svg>
+        <div class="flex flex-col items-center justify-center">
+          <div class="text-emerald-400 font-black text-lg">➔</div>
+          <div id="anim-enzyme-tag" class="text-[10px] text-slate-400 truncate max-w-[120px]">Hexokinase</div>
         </div>
-
-        <!-- Molecular Transformation Visualizer -->
-        <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 space-y-3">
-          <div class="flex items-center justify-between">
-            <span id="label-schema" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reaction Dynamic Schema:</span>
-            <span id="anim-step-badge" class="text-xs font-mono text-emerald-400 font-bold">Step 1</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center text-center p-3 bg-slate-950 rounded-xl border border-slate-800">
-            <!-- Reactant Molecule -->
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
-              <div id="label-substrate-tag" class="text-[10px] text-slate-500 uppercase font-mono mb-1">Substrate</div>
-              <div id="anim-substrate-name" class="font-bold text-slate-200 text-sm">Glucose</div>
-              <div id="anim-substrate-c" class="text-xs font-mono text-cyan-400 mt-1">C6 Molecule</div>
-            </div>
-
-            <!-- Reaction Arrow & Cofactor Animation -->
-            <div class="flex flex-col items-center justify-center p-2">
-              <div id="anim-cofactor-tag" class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-1 font-bold">
-                ATP ➔ ADP
-              </div>
-              <div class="text-emerald-400 text-2xl font-black">➔</div>
-              <div id="anim-enzyme-tag" class="text-[11px] text-slate-400 font-medium mt-1 truncate max-w-[150px]">
-                Hexokinase
-              </div>
-            </div>
-
-            <!-- Product Molecule -->
-            <div class="p-3 bg-emerald-950/40 rounded-lg border border-emerald-500/40">
-              <div id="label-product-tag" class="text-[10px] text-emerald-400 uppercase font-mono mb-1 font-bold">Product</div>
-              <div id="anim-product-name" class="font-bold text-emerald-300 text-sm">Glucose-6-P</div>
-              <div id="anim-product-c" class="text-xs font-mono text-emerald-400 mt-1">Phosphate Added</div>
-            </div>
-          </div>
-
-          <p id="anim-mechanics-desc" class="text-xs text-slate-400 leading-relaxed">
-            Hexokinase transfers an inorganic phosphate group from ATP to the C6 position of glucose, forming a negative charge that traps glucose inside the cell.
-          </p>
+        <div class="p-2 bg-emerald-950/30 rounded-lg border border-emerald-500/30">
+          <div class="text-[10px] text-emerald-400 font-mono font-bold">PRODUCT</div>
+          <div id="anim-product-name" class="font-bold text-emerald-300 mt-0.5">G6P</div>
+          <div class="text-[10px] text-emerald-400 font-mono">+Pi</div>
         </div>
-
       </div>
-
+      <p id="anim-mechanics-desc" class="text-xs text-slate-400 leading-relaxed px-1"></p>
     </div>
+
+    <!-- ================= VIEW 4: USMLE CLINICAL CASE ================= -->
+    <div id="view-case" class="hidden space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h2 id="title-case-panel" class="text-base font-bold text-white flex items-center gap-1.5">
+          <span>🏥 Board Vignette</span>
+        </h2>
+        <span id="case-index-indicator" class="text-xs font-mono text-slate-400">Case 1 / 4</span>
+      </div>
+
+      <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider">Scenario:</span>
+          <span id="case-topic-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-950 text-indigo-300 border border-indigo-500/30 font-bold">Metabolic</span>
+        </div>
+        <p id="case-scenario-text" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-serif"></p>
+        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 font-semibold">
+          <span id="case-question-text"></span>
+        </div>
+      </div>
+
+      <div id="case-options-container" class="space-y-1.5"></div>
+
+      <div id="case-explanation-box" class="hidden p-3.5 rounded-xl border text-xs sm:text-sm space-y-2">
+        <div id="case-result-title" class="font-bold"></div>
+        <p id="case-explanation-text" class="text-slate-300 leading-relaxed text-xs"></p>
+        <div class="pt-1 flex justify-end">
+          <button type="button" onclick="nextCaseQuestion()" id="btn-next-case" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-all shadow">
+            Next Case ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <!-- Notification Toast -->
-  <div id="toast-box" class="fixed bottom-6 right-6 z-50 pointer-events-none transition-all duration-300 opacity-0 transform translate-y-3">
-    <div id="toast-content" class="px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2">
+  <!-- Mobile Settings Drawer (Bottom Sheet) -->
+  <div id="settings-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end justify-center" onclick="toggleSettingsDrawer()">
+    <div class="bg-slate-900 border-t border-slate-800 rounded-t-2xl p-5 w-full max-w-md space-y-4" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-sm text-white">Tools & Settings</h3>
+        <button type="button" onclick="toggleSettingsDrawer()" class="text-slate-400 hover:text-white text-xs">✕ Close</button>
+      </div>
+      <div class="space-y-2 text-xs">
+        <button type="button" onclick="exportToAnkiCSV(); toggleSettingsDrawer();" class="w-full p-2.5 bg-indigo-950/80 border border-indigo-500/40 text-indigo-200 font-bold rounded-xl flex items-center justify-between">
+          <span>📥 Download Anki Deck (.csv)</span>
+          <span>➔</span>
+        </button>
+        <button type="button" onclick="toggleLanguage(); toggleSettingsDrawer();" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-slate-200 font-bold rounded-xl flex items-center justify-between">
+          <span>🌐 Switch Language (EN / 日本語)</span>
+          <span id="drawer-lang-val">EN</span>
+        </button>
+        <button type="button" onclick="toggleSound();" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-slate-200 font-bold rounded-xl flex items-center justify-between">
+          <span>🔊 Sound Effects</span>
+          <span id="drawer-sound-val">ON</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 pointer-events-none transition-all duration-300 opacity-0 transform translate-y-3">
+    <div id="toast-content" class="px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl text-xs font-bold flex items-center gap-2">
       <span id="toast-icon">✅</span>
       <span id="toast-text">Correct!</span>
     </div>
   </div>
 
-  <!-- SCRIPT LOGIC -->
+  <!-- COMPLETE RUNTIME ENGINE (No lines omitted) -->
   <script>
-    // --- Data Definitions (Glycolysis & TCA) ---
+    // --- Audio Synthesizer (Zero external latency) ---
+    let audioCtx = null;
+    let isSoundMuted = false;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTone(freq, type, duration, gainVal = 0.1) {
+      if (isSoundMuted) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundSuccess() {
+      playTone(523.25, 'sine', 0.1, 0.12);
+      setTimeout(() => playTone(659.25, 'sine', 0.14, 0.12), 70);
+      setTimeout(() => playTone(783.99, 'triangle', 0.22, 0.14), 140);
+    }
+
+    function soundCombo() {
+      playTone(587.33, 'triangle', 0.08, 0.1);
+      setTimeout(() => playTone(880.00, 'triangle', 0.18, 0.15), 70);
+    }
+
+    function soundError() {
+      playTone(220, 'sawtooth', 0.15, 0.15);
+      setTimeout(() => playTone(196, 'sawtooth', 0.22, 0.15), 90);
+    }
+
+    function toggleSound() {
+      isSoundMuted = !isSoundMuted;
+      const soundIcon = document.getElementById('sound-icon');
+      const drawerSound = document.getElementById('drawer-sound-val');
+      if (soundIcon) soundIcon.textContent = isSoundMuted ? '🔇' : '🔊';
+      if (drawerSound) drawerSound.textContent = isSoundMuted ? 'OFF' : 'ON';
+      showToast(isSoundMuted ? "Sound Muted 🔇" : "Sound Enabled 🔊", true);
+    }
+
+    // --- Complete Pathways Dataset (4 Pathways) ---
     const pathwayData = {
       glycolysis: [
         {
@@ -471,10 +526,10 @@
           locationEn: "Cytosol",
           locationJa: "細胞質",
           diseaseTag: "MODY 2",
-          pearlEn: "Glucokinase is a pancreatic beta-cell glucose sensor (high Km, high Vmax). Inactivating mutations cause MODY 2; induced by insulin.",
-          pearlJa: "グルコキナーゼは膵β細胞の糖センサー（高Km・高Vmax）。遺伝的変異はMODY2（若年発症型成人糖尿病）の原因になります。",
-          mechanicsEn: "ATP transfers a phosphate to glucose C6, trapping it inside the cell.",
-          mechanicsJa: "ATPのリン酸基をグルコースC6位に転移させ、負電荷を付与して細胞内にトラップします。",
+          pearlEn: "Glucokinase is a pancreatic beta-cell sensor with high Km & Vmax. Loss-of-function causes MODY 2.",
+          pearlJa: "グルコキナーゼは膵β細胞の糖センサー（高Km・高Vmax）。遺伝性変異はMODY2を引き起こします。",
+          mechanicsEn: "ATP transfers a phosphate group to glucose C6, trapping it in the cytosol.",
+          mechanicsJa: "ATPのリン酸基をグルコースC6位に転移させ、負電荷により細胞内に留めます。",
           nextNameEn: "Glucose-6-phosphate",
           nextNameJa: "グルコース-6-リン酸"
         },
@@ -490,11 +545,11 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "HMP Shunt Entry",
-          pearlEn: "G6P is the major branch point: can enter glycolysis, glycogen synthesis, or HMP shunt (via G6PD).",
-          pearlJa: "G6Pは解糖系、グリコーゲン合成、ペントースリン酸回路（G6PD経由）への重要な分岐点物質です。",
-          mechanicsEn: "Aldose-ketose isomerization converts G6P into F6P.",
-          mechanicsJa: "アルドースからケトースへの異性化を行い、G6PをF6Pへ変換します。",
+          diseaseTag: "HMP Entry",
+          pearlEn: "G6P is the critical metabolic crossroad: Glycolysis, Glycogen synthesis, or HMP Shunt.",
+          pearlJa: "G6Pは解糖系、グリコーゲン合成、ペントースリン酸回路への重要な分岐点物質です。",
+          mechanicsEn: "Aldose-to-ketose isomerization converts G6P into F6P.",
+          mechanicsJa: "アルドースからケトースへの可逆的異性化でF6Pへ変換します。",
           nextNameEn: "Fructose-6-phosphate",
           nextNameJa: "フルクトース-6-リン酸"
         },
@@ -511,10 +566,10 @@
           locationEn: "Cytosol",
           locationJa: "細胞質",
           diseaseTag: "Tarui Disease",
-          pearlEn: "PFK-1 is the RATE-LIMITING step of glycolysis. Inhibited by ATP & Citrate; activated by AMP & Fructose-2,6-bisphosphate.",
-          pearlJa: "解糖系の最重要【律速段階】。ATPとクエン酸で阻害され、AMPやF-2,6-BPで強力に活性化されます（樽井病欠損酵素）。",
-          mechanicsEn: "Consumes 2nd ATP to phosphorylate F6P into F1,6BP.",
-          mechanicsJa: "2分子目のATPを消費してリン酸化し、F1,6BPを生成します（最重要律速段階）。",
+          pearlEn: "RATE-LIMITING step of glycolysis. Inhibited by ATP & Citrate; strongly activated by AMP & F-2,6-BP.",
+          pearlJa: "解糖系の最重要【律速段階】。ATPとクエン酸で阻害、AMPやF-2,6-BPで強力に活性化されます。",
+          mechanicsEn: "Second ATP investment generates Fructose-1,6-bisphosphate.",
+          mechanicsJa: "2分子目のATPを消費し、不可逆的にF1,6BPを生成します。",
           nextNameEn: "Fructose-1,6-bisphosphate",
           nextNameJa: "フルクトース-1,6-ビスリン酸"
         },
@@ -530,10 +585,10 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "Hereditary Fructose Intolerance",
-          pearlEn: "Aldolase B in liver cleaves Fructose-1-P. Deficiency causes Hereditary Fructose Intolerance (hypoglycemia, vomiting).",
-          pearlJa: "アルドラーゼBの欠損は遺伝性果糖不耐症を引き起こし、重篤な低血糖や肝障害を招きます。",
-          mechanicsEn: "Cleaves C6 sugar into two C3 trioses (DHAP and GAP).",
+          diseaseTag: "Fructose Intolerance",
+          pearlEn: "Aldolase B deficiency leads to toxic accumulation of F-1-P in Hereditary Fructose Intolerance.",
+          pearlJa: "アルドラーゼB欠損は遺伝性果糖不耐症を招き、果糖摂取後の激しい低血糖を起こします。",
+          mechanicsEn: "Cleaves C6 hexose into two C3 trioses (DHAP and GAP).",
           mechanicsJa: "C6の糖を2つのC3トリオース（DHAPとGAP）へと開裂させます。",
           nextNameEn: "Glyceraldehyde 3-phosphate",
           nextNameJa: "グリセルアルデヒド-3-リン酸"
@@ -550,11 +605,11 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "Glycerol Shuttle",
-          pearlEn: "DHAP connects glycolysis to triglyceride synthesis (glycerol-3-P) and the glycerol-phosphate shuttle.",
-          pearlJa: "中性脂肪合成やグリセロールリン酸シャトルと解糖系を繋ぐ架け橋となる分子です。",
-          mechanicsEn: "Isomerizes DHAP into Glyceraldehyde-3-phosphate for downstream reactions.",
-          mechanicsJa: "DHAPをGAPへ異性化し、下流の反応へ合流させます。",
+          diseaseTag: "Glycerol Link",
+          pearlEn: "DHAP links glycolysis directly with triglyceride synthesis via glycerol-3-phosphate.",
+          pearlJa: "中性脂肪合成やグリセロールリン酸シャトルと解糖系を結ぶ中間体です。",
+          mechanicsEn: "Isomerizes DHAP into GAP for downstream payoff phase.",
+          mechanicsJa: "DHAPをGAPへ異性化し、下流の代謝反応へ合流させます。",
           nextNameEn: "Glyceraldehyde 3-phosphate",
           nextNameJa: "グリセルアルデヒド-3-リン酸"
         },
@@ -571,10 +626,10 @@
           locationEn: "Cytosol",
           locationJa: "細胞質",
           diseaseTag: "Arsenic Poisoning",
-          pearlEn: "Arsenic competes with inorganic phosphate, yielding zero net ATP synthesis in glycolysis without inhibiting GAPDH directly.",
-          pearlJa: "ヒ素中毒はPiと競合して解糖系のATP正味産生をゼロにし、エネルギー枯渇を起こします。",
-          mechanicsEn: "Generates 2 NADH per glucose and high-energy 1,3-BPG.",
-          mechanicsJa: "1グルコースあたり2分子のNADHを産生し、高エネルギー化合物1,3-BPGを生成します。",
+          pearlEn: "Arsenic competes with Pi in this step, resulting in zero net ATP without direct enzyme inhibition.",
+          pearlJa: "ヒ素中毒はPiと競合し、解糖系のATP正味産生をゼロにしてエネルギー枯渇を招きます。",
+          mechanicsEn: "Produces 2 NADH and high-energy acyl-phosphate in 1,3-BPG.",
+          mechanicsJa: "1グルコースあたり2分子のNADHを産生し、1,3-BPGを生成します。",
           nextNameEn: "1,3-Bisphosphoglycerate",
           nextNameJa: "1,3-ビスホスホグリセリン酸"
         },
@@ -590,11 +645,11 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "Substrate Phosphorylation",
-          pearlEn: "First substrate-level phosphorylation producing ATP. In RBCs, bypassed to make 2,3-BPG (shifts oxygen curve right).",
-          pearlJa: "基質レベルのリン酸化でATPを回収。赤血球では2,3-BPGへ迂回し、酸素解離度曲線を右方移動させます。",
-          mechanicsEn: "Transfers high-energy phosphate to ADP, generating 2 ATP.",
-          mechanicsJa: "高エネルギーリン酸基をADPへ転移させ、基質レベルのリン酸化で2分子のATPを回収します。",
+          diseaseTag: "2,3-BPG Shunt",
+          pearlEn: "First substrate-level phosphorylation (+2 ATP). In RBCs, bypassed to synthesize 2,3-BPG.",
+          pearlJa: "基質レベルのリン酸化でATP回収。赤血球では2,3-BPGへ迂回し酸素解離を調節します。",
+          mechanicsEn: "Transfers high-energy phosphate to ADP, producing 2 ATP.",
+          mechanicsJa: "高エネルギーリン酸基をADPへ転移させ、2分子のATPを回収します。",
           nextNameEn: "3-Phosphoglycerate",
           nextNameJa: "3-ホスホグリセリン酸"
         },
@@ -610,11 +665,11 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "Reversible Step",
-          pearlEn: "Reversible mutase step transferring phosphate from C3 to C2 position.",
+          diseaseTag: "Mutase Step",
+          pearlEn: "Shifts phosphate group from position 3 to 2 for subsequent enol generation.",
           pearlJa: "リン酸基を3位から2位へと移す可逆的な変位酵素反応です。",
-          mechanicsEn: "Phosphate is repositioned to prepare for enol formation.",
-          mechanicsJa: "リン酸基を3位から2位へと変位させ、エノール化の準備を整えます。",
+          mechanicsEn: "Reversible mutase reaction preparing for enolase.",
+          mechanicsJa: "エノール化の準備としてリン酸基の位置を変位させます。",
           nextNameEn: "2-Phosphoglycerate",
           nextNameJa: "2-ホスホグリセリン酸"
         },
@@ -630,11 +685,11 @@
           nadhDelta: 0,
           locationEn: "Cytosol",
           locationJa: "細胞質",
-          diseaseTag: "Fluoride Inhibition",
-          pearlEn: "Enolase is inhibited by fluoride (used in blood collection tubes to stop in vitro glycolysis).",
-          pearlJa: "エノラーゼはフッ化物（採血管に入っているNaF）で阻害され、試験管内での糖分解を止めます。",
+          diseaseTag: "Fluoride Sensitive",
+          pearlEn: "Inhibited by sodium fluoride (used in gray-top plasma glucose collection tubes).",
+          pearlJa: "エノラーゼはNaF（血糖採血管）で阻害され、試験管内の解糖を停止させます。",
           mechanicsEn: "Dehydration forms high-energy phosphate bond in PEP.",
-          mechanicsJa: "脱水反応により高エネルギーリン酸結合を持つPEP（ホスホエノールピルビン酸）を形成します。",
+          mechanicsJa: "脱水反応により高エネルギーリン酸結合を持つPEPを形成します。",
           nextNameEn: "Phosphoenolpyruvate",
           nextNameJa: "ホスホエノールピルビン酸"
         },
@@ -651,10 +706,10 @@
           locationEn: "Cytosol",
           locationJa: "細胞質",
           diseaseTag: "Hemolytic Anemia",
-          pearlEn: "Pyruvate kinase deficiency causes autosomal recessive hemolytic anemia due to lack of ATP for RBC membrane Na/K pumps.",
-          pearlJa: "ピルビン酸キナーゼ欠損は赤血球のATP枯渇を招き、先天性非球状赤血球性溶血性貧血を起こします。",
-          mechanicsEn: "Generates 2 ATP and yields Pyruvate (final product).",
-          mechanicsJa: "2分子のATPを産生し、最終産物であるピルビン酸を生成します。",
+          pearlEn: "Deficiency causes autosomal recessive hemolytic anemia due to membrane Na/K pump failure from lack of ATP.",
+          pearlJa: "欠損症は赤血球のATP枯渇を招き、先天性溶血性貧血の原因となります。",
+          mechanicsEn: "Generates 2 ATP, yielding the final product Pyruvate.",
+          mechanicsJa: "2分子のATPを産生し、最終産物であるピルビン酸を不可逆的に生成します。",
           nextNameEn: "Pyruvate",
           nextNameJa: "ピルビン酸"
         }
@@ -672,11 +727,11 @@
           nadhDelta: 0,
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
-          diseaseTag: "Fatty Acid Shuttle",
-          pearlEn: "Citrate leaves mitochondria via citrate shuttle for fatty acid synthesis; allosterically inhibits PFK-1.",
-          pearlJa: "ミトコンドリアを出て脂肪酸合成の原料となり、同時に解糖系の律速酵素PFK-1を強力に阻害します。",
+          diseaseTag: "Citrate Shuttle",
+          pearlEn: "Citrate leaves mitochondria to supply cytosolic acetyl-CoA for fatty acid synthesis.",
+          pearlJa: "ミトコンドリアを出て脂肪酸合成の原料となり、解糖系PFK-1を強力に阻害します。",
           mechanicsEn: "Condensation of Oxaloacetate (C4) and Acetyl-CoA (C2).",
-          mechanicsJa: "オキサロ酢酸(C4)とアセチルCoA(C2)が縮合し、クエン酸(C6)を生成します。",
+          mechanicsJa: "オキサロ酢酸とアセチルCoAが縮合しクエン酸を生成します。",
           nextNameEn: "Isocitrate",
           nextNameJa: "イソクエン酸"
         },
@@ -693,10 +748,10 @@
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
           diseaseTag: "Rate-Limiting Step",
-          pearlEn: "IDH is the RATE-LIMITING enzyme of TCA cycle. Inhibited by ATP & NADH; activated by ADP. Produces 1st NADH and CO2.",
-          pearlJa: "TCA回路全体の【律速酵素】。ATP/NADHで阻害されADPで活性化。第1のNADHとCO2を放出します。",
-          mechanicsEn: "Oxidative decarboxylation forms alpha-Ketoglutarate (C5).",
-          mechanicsJa: "酸化的な脱炭酸反応により、1つ目のNADHとCO2を放出し、α-ケトグルタル酸(C5)を生成（律速段階）。",
+          pearlEn: "RATE-LIMITING enzyme of TCA cycle. Inhibited by ATP/NADH; activated by ADP. Releases 1st CO2.",
+          pearlJa: "TCA回路の【律速段階】。ATP/NADHで阻害されADPで活性化。第1のNADHとCO2を放出。",
+          mechanicsEn: "Oxidative decarboxylation generating alpha-Ketoglutarate (C5).",
+          mechanicsJa: "脱炭酸反応により1つ目のNADHとCO2を放出し、α-ケトグルタル酸を生成。",
           nextNameEn: "alpha-Ketoglutarate",
           nextNameJa: "α-ケトグルタル酸"
         },
@@ -713,10 +768,10 @@
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
           diseaseTag: "Wernicke-Korsakoff",
-          pearlEn: "Requires 5 cofactors: B1 (Thiamine), B2, B3, B5, Lipoic acid. Thiamine deficiency arrests this cycle (Beriberi).",
-          pearlJa: "5つの補酵素（ビタミンB1, B2, B3, B5, リポ酸）を要求。B1欠乏で回路が停止します（ウェルニッケ・脚気）。",
+          pearlEn: "Requires 5 cofactors: B1, B2, B3, B5, Lipoic acid. Thiamine deficiency arrests this step.",
+          pearlJa: "ビタミンB1（チアミン）を含む5大補酵素を要求。欠乏で回路が停止します（ウェルニッケ・脚気）。",
           mechanicsEn: "Releases 2nd CO2 and produces NADH, yielding Succinyl-CoA.",
-          mechanicsJa: "2つ目のCO2を放出し、NADHを産生してスクシニルCoAを生成します（ビタミンB1依存）。",
+          mechanicsJa: "2つ目のCO2を放出し、NADHを産生してスクシニルCoAを生成します。",
           nextNameEn: "Succinyl-CoA",
           nextNameJa: "スクシニルCoA"
         },
@@ -732,11 +787,11 @@
           nadhDelta: 0,
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
-          diseaseTag: "Heme Synthesis",
-          pearlEn: "Succinyl-CoA is incorporated into Heme synthesis (combines with Glycine via ALA synthase). Produces GTP/ATP.",
-          pearlJa: "グリシンと結合してヘム合成の初発原料となります。基質レベルのリン酸化でGTP/ATPを1分子産生。",
+          diseaseTag: "Heme Precursor",
+          pearlEn: "Succinyl-CoA condenses with Glycine in heme synthesis. Yields 1 GTP (ATP equivalents).",
+          pearlJa: "グリシンと結合してヘム合成の原料となります。基質レベルのリン酸化で1 GTPを産生。",
           mechanicsEn: "Cleaves thioester bond to yield Succinate and 1 GTP.",
-          mechanicsJa: "チオエステル結合の開裂エネルギーを利用し、基質レベルのリン酸化でGTP(ATP)を産生。",
+          mechanicsJa: "チオエステル結合の開裂により基質レベルのリン酸化でGTPを産生します。",
           nextNameEn: "Succinate",
           nextNameJa: "コハク酸"
         },
@@ -753,10 +808,10 @@
           locationEn: "Inner Mitochondrial Membrane",
           locationJa: "ミトコンドリア 内膜",
           diseaseTag: "Complex II Link",
-          pearlEn: "The ONLY TCA enzyme embedded in the INNER mitochondrial membrane; acts directly as Complex II of ETC.",
+          pearlEn: "The ONLY TCA enzyme embedded directly in the INNER mitochondrial membrane (Complex II of ETC).",
           pearlJa: "TCA回路で唯一【ミトコンドリア内膜】に埋め込まれている酵素。電子伝達系複合体IIそのものです。",
           mechanicsEn: "Oxidizes succinate to fumarate while reducing FAD to FADH2.",
-          mechanicsJa: "コハク酸を酸化してフマル酸とし、FADをFADH2へ還元（電子伝達系複合体IIと同一）。",
+          mechanicsJa: "コハク酸をフマル酸へ酸化し、FADをFADH2へ還元します。",
           nextNameEn: "Fumarate",
           nextNameJa: "フマル酸"
         },
@@ -773,8 +828,8 @@
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
           diseaseTag: "Urea Cycle Link",
-          pearlEn: "Fumarate connects the TCA cycle directly with the Urea Cycle (via argininosuccinate lyase).",
-          pearlJa: "尿素回路（アルギニノコハク酸開裂）で生じたフマル酸がTCA回路へ流れ込む接合点です。",
+          pearlEn: "Fumarate connects the TCA cycle directly with the Urea cycle via argininosuccinate lyase.",
+          pearlJa: "尿素回路で産生されたフマル酸がTCA回路へ流れ込む接合点です。",
           mechanicsEn: "Hydration across double bond yields L-Malate.",
           mechanicsJa: "二重結合への水和反応によりL-リンゴ酸を生成します。",
           nextNameEn: "Malate",
@@ -792,11 +847,11 @@
           nadhDelta: 1,
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
-          diseaseTag: "Malate-Aspartate Shuttle",
-          pearlEn: "Key intermediate of Malate-Aspartate shuttle transferring NADH electrons into mitochondria.",
-          pearlJa: "細胞質のNADHをミトコンドリア内へ送り込むリンゴ酸-アスパラギン酸シャトルの主役です。",
+          diseaseTag: "Malate Shuttle",
+          pearlEn: "Part of the Malate-Aspartate shuttle bringing cytosolic reducing equivalents into matrix.",
+          pearlJa: "細胞質のNADHをミトコンドリア内へ送り込むリンゴ酸シャトルの主役です。",
           mechanicsEn: "Oxidized back to Oxaloacetate, generating the 3rd NADH.",
-          mechanicsJa: "リンゴ酸が酸化されてオキサロ酢酸へ戻り、3つ目のNADHを産生します。",
+          mechanicsJa: "リンゴ酸が酸化されてオキサロ酢酸へ戻り、3つ目のNADHを産生。",
           nextNameEn: "Oxaloacetate",
           nextNameJa: "オキサロ酢酸"
         },
@@ -813,101 +868,264 @@
           locationEn: "Mitochondrial Matrix",
           locationJa: "ミトコンドリア マトリックス",
           diseaseTag: "Gluconeogenesis",
-          pearlEn: "Cannot cross inner membrane directly; converted to PEP via PEPCK in gluconeogenesis.",
-          pearlJa: "糖新生ではミトコンドリア膜を直接通過できないため、リンゴ酸を経由して細胞質で糖新生へ向かいます。",
+          pearlEn: "Oxaloacetate leaves mitochondria as Malate to fuel gluconeogenesis in fasting states.",
+          pearlJa: "糖新生ではリンゴ酸に変換されてミトコンドリア外へ脱出し、グルコース新生に向かいます。",
           mechanicsEn: "Combines with new Acetyl-CoA to repeat the cycle.",
-          mechanicsJa: "再び新たなアセチルCoAと縮合し、回路を循環させます。",
+          mechanicsJa: "新たなアセチルCoAと縮合し、再び回路を循環させます。",
           nextNameEn: "Citrate",
           nextNameJa: "クエン酸"
+        }
+      ],
+      gluconeogenesis: [
+        {
+          step: 1,
+          nameEn: "Pyruvate carboxylase",
+          nameJa: "ピルビン酸カルボキシラーゼ",
+          carbon: "C3 ➔ C4",
+          enzymeEn: "Pyruvate carboxylase",
+          enzymeJa: "ピルビン酸カルボキシラーゼ（要B7）",
+          isIrreversible: true,
+          atpDelta: -1,
+          nadhDelta: 0,
+          locationEn: "Mitochondrial Matrix",
+          locationJa: "ミトコンドリア マトリックス",
+          diseaseTag: "Biotin Dependent",
+          pearlEn: "Requires Biotin (B7) & ATP. Allosterically activated by Acetyl-CoA.",
+          pearlJa: "ビオチン(B7)とATPを要求し、アセチルCoAにより強力に活性化されます。",
+          mechanicsEn: "Carboxylates pyruvate into Oxaloacetate inside mitochondria.",
+          mechanicsJa: "ピルビン酸をカルボキシル化してオキサロ酢酸を生成します。",
+          nextNameEn: "Oxaloacetate",
+          nextNameJa: "オキサロ酢酸"
+        },
+        {
+          step: 2,
+          nameEn: "Phosphoenolpyruvate carboxykinase",
+          nameJa: "ホスホエノールピルビン酸カルボキシキナーゼ (PEPCK)",
+          carbon: "C4 ➔ C3",
+          enzymeEn: "PEPCK (Cytosol)",
+          enzymeJa: "PEPCK（細胞質迂回）",
+          isIrreversible: true,
+          atpDelta: -1,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "GTP Consumed",
+          pearlEn: "Converts Oxaloacetate to PEP using GTP. Induced by Glucagon and Cortisol.",
+          pearlJa: "GTPを消費してオキサロ酢酸をPEPに変換。グルカゴンにより発現誘導されます。",
+          mechanicsEn: "Decarboxylation and phosphorylation yield PEP.",
+          mechanicsJa: "脱炭酸とリン酸化により高エネルギー化合物PEPを生成します。",
+          nextNameEn: "Fructose-1,6-bisphosphate",
+          nextNameJa: "フルクトース-1,6-ビスリン酸"
+        },
+        {
+          step: 3,
+          nameEn: "Fructose-1,6-bisphosphatase",
+          nameJa: "フルクトース-1,6-ビスホスファターゼ",
+          carbon: "C6",
+          enzymeEn: "Fructose-1,6-bisphosphatase-1",
+          enzymeJa: "フルクトース-1,6-ビスホスファターゼ-1",
+          isIrreversible: true,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "Rate-Limiting Step",
+          pearlEn: "RATE-LIMITING enzyme of gluconeogenesis. Inhibited by AMP & F-2,6-BP; activated by Citrate.",
+          pearlJa: "糖新生全体の【律速段階】。AMPとF-2,6-BPで阻害され、クエン酸で活性化されます。",
+          mechanicsEn: "Hydrolyzes phosphate from F-1,6-BP to yield F6P.",
+          mechanicsJa: "加水分解によりリン酸を遊離させ、F6Pを生成します。",
+          nextNameEn: "Fructose-6-phosphate",
+          nextNameJa: "フルクトース-6-リン酸"
+        },
+        {
+          step: 4,
+          nameEn: "Glucose-6-phosphatase",
+          nameJa: "グルコース-6-ホスファターゼ",
+          carbon: "C6",
+          enzymeEn: "Glucose-6-phosphatase (ER)",
+          enzymeJa: "グルコース-6-ホスファターゼ（小胞体）",
+          isIrreversible: true,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Endoplasmic Reticulum (Liver)",
+          locationJa: "小胞体（肝臓・腎臓）",
+          diseaseTag: "Von Gierke Disease",
+          pearlEn: "Deficiency causes Von Gierke Disease (Type I GSD: severe fasting hypoglycemia, hepatomegaly). Absent in muscle.",
+          pearlJa: "欠損は糖原病I型（フォン・ギールケ病）の原因（重篤な空腹時低血糖）。筋肉には存在しません。",
+          mechanicsEn: "Dephosphorylates G6P in ER lumen to export free glucose into blood.",
+          mechanicsJa: "小胞体内腔でリン酸を除去し、遊離グルコースとして血中へ放出します。",
+          nextNameEn: "Free Glucose",
+          nextNameJa: "遊離グルコース"
+        }
+      ],
+      hmp: [
+        {
+          step: 1,
+          nameEn: "Glucose-6-phosphate dehydrogenase",
+          nameJa: "グルコース-6-リン酸脱水素酵素 (G6PD)",
+          carbon: "C6",
+          enzymeEn: "G6PD (Rate-Limiting)",
+          enzymeJa: "G6PD（律速酵素）",
+          isIrreversible: true,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "G6PD Deficiency",
+          pearlEn: "RATE-LIMITING enzyme. Generates NADPH to keep glutathione reduced. X-linked deficiency causes hemolytic anemia.",
+          pearlJa: "HMPシャントの【律速段階】。NADPHを産生して還元型グルタチオンを維持。欠損は溶血を起こします。",
+          mechanicsEn: "Oxidizes G6P to produce 1st NADPH.",
+          mechanicsJa: "G6Pを酸化して1分子目のNADPHを産生します。",
+          nextNameEn: "6-Phosphoglucono-delta-lactone",
+          nextNameJa: "6-ホスホグルコノラクトン"
+        },
+        {
+          step: 2,
+          nameEn: "6-Phosphogluconate dehydrogenase",
+          nameJa: "6-ホスホグルコン酸脱水素酵素",
+          carbon: "C6 ➔ C5",
+          enzymeEn: "6-Phosphogluconate dehydrogenase",
+          enzymeJa: "6-ホスホグルコン酸脱水素酵素",
+          isIrreversible: true,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "NADPH & CO2",
+          pearlEn: "Produces the second NADPH and releases CO2 to generate pentose sugar (Ribulose-5-P).",
+          pearlJa: "2分子目のNADPHを産生しCO2を放出。五炭糖リブロース-5-リン酸を生成します。",
+          mechanicsEn: "Oxidative decarboxylation generating Ribulose-5-P.",
+          mechanicsJa: "脱炭酸反応によりRibulose-5-Pを生成。",
+          nextNameEn: "Ribulose-5-phosphate",
+          nextNameJa: "リブロース-5-リン酸"
+        },
+        {
+          step: 3,
+          nameEn: "Ribulose-5-phosphate",
+          nameJa: "リブロース-5-リン酸",
+          carbon: "C5",
+          enzymeEn: "Phosphopentose isomerase",
+          enzymeJa: "ホスホペントースイソメラーゼ",
+          isIrreversible: false,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "PRPP Precursor",
+          pearlEn: "Converted to Ribose-5-phosphate for nucleotide and PRPP synthesis.",
+          pearlJa: "核酸合成（プリン・ピリミジン塩基）の前駆体であるリボース-5-リン酸へ変換されます。",
+          mechanicsEn: "Isomerizes pentose ketose into aldose (Ribose-5-P).",
+          mechanicsJa: "五炭糖の異性化によりリボース-5-リン酸を生成。",
+          nextNameEn: "Ribose-5-phosphate",
+          nextNameJa: "リボース-5-リン酸"
+        },
+        {
+          step: 4,
+          nameEn: "Transketolase",
+          nameJa: "トランスケトラーゼ",
+          carbon: "C5 ➔ C3+C7",
+          enzymeEn: "Transketolase (Requires B1)",
+          enzymeJa: "トランスケトラーゼ（要B1）",
+          isIrreversible: false,
+          atpDelta: 0,
+          nadhDelta: 0,
+          locationEn: "Cytosol",
+          locationJa: "細胞質",
+          diseaseTag: "B1 Diagnostic Assay",
+          pearlEn: "Requires Thiamine (B1). Erythrocyte transketolase activity measures thiamine nutritional status.",
+          pearlJa: "ビタミンB1依存。赤血球トランスケトラーゼ活性測定はB1欠乏の確定診断に用いられます。",
+          mechanicsEn: "Recycles excess pentoses back into glycolysis intermediates (GAP, F6P).",
+          mechanicsJa: "過剰な五炭糖を解糖系中間体へとリサイクルします。",
+          nextNameEn: "Glyceraldehyde 3-phosphate",
+          nextNameJa: "グリセルアルデヒド-3-リン酸"
         }
       ]
     };
 
+    // --- Clinical Cases Dataset ---
+    const clinicalCases = [
+      {
+        topicEn: "Inborn Error of Metabolism",
+        topicJa: "先天性代謝異常",
+        scenarioEn: "A 6-month-old infant is evaluated for vomiting, hypoglycemia, and jaundice following the introduction of fruit juices. Urine testing is positive for reducing substances but negative for glucose.",
+        scenarioJa: "生後6ヶ月の乳児が、離乳食に果汁を導入した直後から嘔吐、著明な低血糖、黄疸を主訴に受診。尿検査ではグルコース陰性だが、還元糖検査が陽性であった。",
+        questionEn: "Which enzyme is most likely deficient in this infant?",
+        questionJa: "この患者で欠損している可能性が最も高い酵素はどれか？",
+        options: [
+          { textEn: "Aldolase B", textJa: "アルドラーゼB", isCorrect: true },
+          { textEn: "Fructokinase", textJa: "フルクトキナーゼ", isCorrect: false },
+          { textEn: "Galactokinase", textJa: "ガラクトキナーゼ", isCorrect: false },
+          { textEn: "Pyruvate kinase", textJa: "ピルビン酸キナーゼ", isCorrect: false }
+        ],
+        explanationEn: "Correct! Hereditary Fructose Intolerance is caused by Aldolase B deficiency. Fructose-1-phosphate accumulates, sequestering inorganic phosphate and inhibiting both gluconeogenesis and glycogenolysis.",
+        explanationJa: "正解！遺伝性果糖不耐症（アルドラーゼB欠損）です。F-1-Pが蓄積して細胞内リン酸を枯渇させ、糖新生とグリコーゲン分解を停止させます。"
+      },
+      {
+        topicEn: "Nutritional Deficiency",
+        topicJa: "ビタミン欠乏",
+        scenarioEn: "A 52-year-old chronic alcoholic presents with confusion, nystagmus, and ataxia (Wernicke encephalopathy). Administering dextrose before thiamine worsens symptoms.",
+        scenarioJa: "52歳のアルコール依存症男性が意識障害、眼振、運動失調（ウェルニッケ脳症）で受診。ビタミンB1投与前にブドウ糖輸液を行うと病態が悪化する。",
+        questionEn: "Which TCA cycle enzyme requires this deficient vitamin cofactor?",
+        questionJa: "この欠乏しているビタミン（B1）を補酵素とするTCA回路の酵素はどれか？",
+        options: [
+          { textEn: "alpha-Ketoglutarate dehydrogenase", textJa: "α-ケトグルタル酸脱水素酵素複合体", isCorrect: true },
+          { textEn: "Isocitrate dehydrogenase", textJa: "イソクエン酸脱水素酵素", isCorrect: false },
+          { textEn: "Succinate dehydrogenase", textJa: "コハク酸脱水素酵素", isCorrect: false },
+          { textEn: "Citrate synthase", textJa: "クエン酸シンターゼ", isCorrect: false }
+        ],
+        explanationEn: "Correct! Both alpha-Ketoglutarate dehydrogenase and Pyruvate dehydrogenase require Vitamin B1 (TPP).",
+        explanationJa: "正解！α-ケトグルタル酸脱水素酵素およびPDHは補酵素としてビタミンB1（チアミン）を必須とします。"
+      },
+      {
+        topicEn: "Hematology & Redox",
+        topicJa: "血液疾患・酸化ストレス",
+        scenarioEn: "A 24-year-old man receives primaquine prophylaxis. Days later he develops dark urine and scleral icterus. Peripheral smear shows Heinz bodies and bite cells.",
+        scenarioJa: "24歳男性がマラリア予防薬プリマキンを服用後、褐色尿と黄疸が出現。末梢血塗抹でハインツ小体とBite cellを認めた。",
+        questionEn: "Which enzyme impairment explains this hemolytic crisis?",
+        questionJa: "この溶血発作の原因となる酵素異常はどれか？",
+        options: [
+          { textEn: "Glucose-6-phosphate dehydrogenase", textJa: "グルコース-6-リン酸脱水素酵素 (G6PD)", isCorrect: true },
+          { textEn: "Pyruvate kinase", textJa: "ピルビン酸キナーゼ", isCorrect: false },
+          { textEn: "Aldolase B", textJa: "アルドラーゼB", isCorrect: false },
+          { textEn: "Hexokinase", textJa: "ヘキソキナーゼ", isCorrect: false }
+        ],
+        explanationEn: "Correct! G6PD deficiency impairs NADPH production, preventing glutathione reduction against oxidant drugs.",
+        explanationJa: "正解！G6PD欠損症です。NADPHを作れないため還元型グルタチオンを維持できず、酸化ストレスで溶血します。"
+      },
+      {
+        topicEn: "Glycogen Storage Disease",
+        topicJa: "糖原病",
+        scenarioEn: "A 4-month-old infant presents with hepatomegaly, lactic acidosis, doll-like facies, and severe fasting hypoglycemia unresponsive to glucagon.",
+        scenarioJa: "生後4ヶ月の乳児が巨大肝腫大、乳酸アシドーシス、人形様顔貌、グルカゴン無反応性の重度空腹時低血糖で受診。",
+        questionEn: "Which endoplasmic reticulum enzyme deficiency causes this condition (Von Gierke)?",
+        questionJa: "小胞体膜上に存在する、糖原病I型（フォン・ギールケ病）の原因酵素はどれか？",
+        options: [
+          { textEn: "Glucose-6-phosphatase", textJa: "グルコース-6-ホスファターゼ", isCorrect: true },
+          { textEn: "Fructose-1,6-bisphosphatase", textJa: "フルクトース-1,6-ビスホスファターゼ", isCorrect: false },
+          { textEn: "Glycogen phosphorylase", textJa: "グリコーゲンホスホリラーゼ", isCorrect: false },
+          { textEn: "Pyruvate kinase", textJa: "ピルビン酸キナーゼ", isCorrect: false }
+        ],
+        explanationEn: "Correct! Glucose-6-phosphatase deficiency blocks the final step of both gluconeogenesis and glycogenolysis.",
+        explanationJa: "正解！グルコース-6-ホスファターゼ欠損です。糖新生・グリコーゲン分解の共通の最終出口がブロックされます。"
+      }
+    ];
+
     // --- State Variables ---
     let currentPathway = 'glycolysis';
     let currentStepIndex = 0;
-    let hintLevel = 'blind'; // 'blind' | 'clue' | 'reveal'
-    let currentLang = 'en';   // 'en' | 'ja' (defaults to English)
-    let appMode = 'drill';    // 'drill' | 'explore' | 'molecular'
+    let hintLevel = 'blind';
+    let currentLang = 'en';
+    let appMode = 'drill';
     let userTyped = '';
     let currentCursorPos = 0;
+    let comboStreak = 0;
+    let currentCaseIndex = 0;
 
-    // --- Complete UI Dictionary ---
-    const i18n = {
-      en: {
-        subtitle: "Interactive Active-Recall & Metabolic Flow",
-        tabDrill: "Spelling Drill",
-        tabExplore: "Explore Pathway",
-        tabMolecular: "Molecular Motion",
-        yieldCounter: "Pathway Yield Counter:",
-        progress: "Progress:",
-        roadmapTitle: "Metabolic Roadmap",
-        flowHint: "Click any step to inspect",
-        targetPrompt: "Name the intermediate / metabolite (English spelling):",
-        letterGuide: "Click tile to place cursor:",
-        inputPlaceholder: "Type spelling here or tap virtual keys below...",
-        btnEnter: "Enter ↵",
-        hintBlind: "🔒 Blanks",
-        hintClue: "💡 Hint",
-        hintReveal: "👁️ Show",
-        irreversible: "★ Irreversible",
-        reversible: "Reversible",
-        pearlTitle: "⚡ USMLE High-Yield Pearl",
-        exploreTitle: "📖 Full Metabolic Pathway Reference",
-        exploreDesc: "Review all chemical structures, enzyme regulations, and board-relevant diseases without hiding any answers.",
-        molecularTitle: "🎬 Molecular Dynamics & Localization",
-        molecularDesc: "Where it happens inside the cell & how molecules shift",
-        compartmentTitle: "Subcellular Compartment Map:",
-        schemaTitle: "Reaction Dynamic Schema:",
-        substrateTag: "Substrate",
-        productTag: "Product",
-        toastLangSwitch: "Switched to English 🇺🇸",
-        pathwayOptions: [
-          { val: "glycolysis", label: "Glycolysis (10 steps)" },
-          { val: "tca", label: "TCA / Krebs Cycle (8 steps)" }
-        ]
-      },
-      ja: {
-        subtitle: "能動的想起による代謝経路マスター",
-        tabDrill: "スペル特訓",
-        tabExplore: "経路閲覧",
-        tabMolecular: "分子アニメ",
-        yieldCounter: "エネルギー収支カウンター:",
-        progress: "進捗:",
-        roadmapTitle: "代謝経路ロードマップ",
-        flowHint: "ステップをクリックして詳細確認",
-        targetPrompt: "中間代謝物の名称（英語スペル）を入力:",
-        letterGuide: "マスをクリックしてカーソル移動:",
-        inputPlaceholder: "ここにスペルを入力するか、下のキーをタップ...",
-        btnEnter: "決定 ↵",
-        hintBlind: "🔒 非表示",
-        hintClue: "💡 ヒント",
-        hintReveal: "👁️ 答え表示",
-        irreversible: "★ 不可逆段階",
-        reversible: "可逆段階",
-        pearlTitle: "⚡ 臨床・国試ハイライト",
-        exploreTitle: "📖 代謝経路 完全リファレンス",
-        exploreDesc: "すべての化学構造、酵素調節、USMLE・国試頻出疾患を答えを隠さずに確認できます。",
-        molecularTitle: "🎬 分子動態と細胞内局在",
-        molecularDesc: "細胞内のどこで反応が起き、分子がどう変化するか",
-        compartmentTitle: "細胞内コンパートメント図:",
-        schemaTitle: "反応メカニズム図解:",
-        substrateTag: "基質",
-        productTag: "生成物",
-        toastLangSwitch: "日本語に切り替えました 🇯🇵",
-        pathwayOptions: [
-          { val: "glycolysis", label: "解糖系 (10ステップ)" },
-          { val: "tca", label: "クエン酸回路 / TCA (8ステップ)" }
-        ]
-      }
-    };
-
-    // --- DOM Elements Cache ---
+    // --- DOM Cache ---
     let inputSpell, spellingSkeleton, feedbackMessage, currentEnzymeName, badgeStepNumber;
     let badgeCarbon, badgeReversibility, badgeDisease, pearlDescription, targetMoleculeDisplay;
-    let hintLetterCount, pathwayFlowContainer;
 
-    function cacheDomElements() {
+    function cacheDom() {
       inputSpell = document.getElementById('input-spell');
       spellingSkeleton = document.getElementById('spelling-skeleton');
       feedbackMessage = document.getElementById('feedback-message');
@@ -918,166 +1136,124 @@
       badgeDisease = document.getElementById('badge-disease');
       pearlDescription = document.getElementById('pearl-description');
       targetMoleculeDisplay = document.getElementById('target-molecule-display');
-      hintLetterCount = document.getElementById('hint-letter-count');
-      pathwayFlowContainer = document.getElementById('pathway-flow-container');
     }
 
     function getDataset() {
-      return pathwayData[currentPathway];
+      return pathwayData[currentPathway] || pathwayData.glycolysis;
     }
 
     function getCurrentStep() {
-      return getDataset()[currentStepIndex];
+      const data = getDataset();
+      return data[currentStepIndex] || data[0];
     }
 
-    // --- Language Switcher (Robust & Error-Free) ---
-    function setLanguage(lang, triggerToast = true) {
-      currentLang = (lang === 'ja') ? 'ja' : 'en';
-      const dict = i18n[currentLang];
-
+    // --- Language Toggle (EN <-> JP) ---
+    function toggleLanguage() {
+      currentLang = (currentLang === 'en') ? 'ja' : 'en';
       try {
-        localStorage.setItem('bp_master_lang', currentLang);
-      } catch (e) {
-        // Fallback for sandboxed or privacy browsers
-      }
+        localStorage.setItem('bp_clean_lang', currentLang);
+      } catch (e) {}
 
-      // Update button visual styles
-      const btnEn = document.getElementById('btn-lang-en');
-      const btnJa = document.getElementById('btn-lang-ja');
+      const flag = document.getElementById('lang-flag');
+      const label = document.getElementById('lang-label');
+      const drawerVal = document.getElementById('drawer-lang-val');
 
-      if (btnEn && btnJa) {
-        if (currentLang === 'en') {
-          btnEn.className = "px-3 py-1.5 rounded-lg font-bold transition-all bg-emerald-500 text-slate-950 shadow flex items-center gap-1.5 ring-2 ring-emerald-400";
-          btnJa.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
-        } else {
-          btnJa.className = "px-3 py-1.5 rounded-lg font-bold transition-all bg-emerald-500 text-slate-950 shadow flex items-center gap-1.5 ring-2 ring-emerald-400";
-          btnEn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
-        }
-      }
+      if (flag) flag.textContent = (currentLang === 'ja') ? '🇯🇵' : '🇺🇸';
+      if (label) label.textContent = (currentLang === 'ja') ? 'JP' : 'EN';
+      if (drawerVal) drawerVal.textContent = (currentLang === 'ja') ? '日本語' : 'EN';
 
-      // Safe update helper
+      const isJa = (currentLang === 'ja');
       const safeText = (id, text) => {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       };
 
-      safeText('header-subtitle', dict.subtitle);
-      safeText('tab-text-drill', dict.tabDrill);
-      safeText('tab-text-explore', dict.tabExplore);
-      safeText('tab-text-molecular', dict.tabMolecular);
-      safeText('label-net-yield', dict.yieldCounter);
-      safeText('label-progress', dict.progress);
-      safeText('flow-hint', dict.flowHint);
-      safeText('label-target-molecule', dict.targetPrompt);
-      safeText('label-letter-guide', dict.letterGuide);
-      safeText('btn-submit', dict.btnEnter);
-      safeText('btn-hint-blind', dict.hintBlind);
-      safeText('btn-hint-clue', dict.hintClue);
-      safeText('btn-hint-reveal', dict.hintReveal);
-      safeText('desc-explore', dict.exploreDesc);
-      safeText('desc-molecular', dict.molecularDesc);
-      safeText('label-compartment', dict.compartmentTitle);
-      safeText('label-schema', dict.schemaTitle);
-      safeText('label-substrate-tag', dict.substrateTag);
-      safeText('label-product-tag', dict.productTag);
+      safeText('tab-text-drill', isJa ? 'スペル特訓' : 'Practice');
+      safeText('tab-text-explore', isJa ? '経路一覧' : 'Roadmap');
+      safeText('tab-text-molecular', isJa ? '分子動画' : 'Dynamics');
+      safeText('tab-text-case', isJa ? '臨床問題' : 'Case');
+      safeText('label-catalyzing-enzyme', isJa ? '触媒酵素:' : 'Catalyzing Enzyme:');
+      safeText('btn-submit', isJa ? '決定 ↵' : 'Enter ↵');
+      safeText('btn-hint-blind', isJa ? '🔒 非表示' : '🔒 Blanks');
+      safeText('btn-hint-clue', isJa ? '💡 ヒント' : '💡 Hint');
+      safeText('btn-hint-reveal', isJa ? '👁️ 表示' : '👁️ Show');
+      safeText('btn-next-case', isJa ? '次の症例 ➔' : 'Next Case ➔');
 
-      const titleFlow = document.getElementById('title-pathway-flow');
-      if (titleFlow && titleFlow.querySelector('span')) titleFlow.querySelector('span').textContent = dict.roadmapTitle;
-
-      const titlePearl = document.getElementById('label-clinical-pearl-title');
-      if (titlePearl && titlePearl.querySelector('span')) titlePearl.querySelector('span').textContent = dict.pearlTitle;
-
-      const titleExplore = document.getElementById('title-explore-panel');
-      if (titleExplore && titleExplore.querySelector('span')) titleExplore.querySelector('span').textContent = dict.exploreTitle;
-
-      const titleMol = document.getElementById('title-molecular-panel');
-      if (titleMol && titleMol.querySelector('span')) titleMol.querySelector('span').textContent = dict.molecularTitle;
-
-      if (inputSpell) inputSpell.placeholder = dict.inputPlaceholder;
-
-      // Update Select Options
-      const selectPathway = document.getElementById('select-pathway');
-      if (selectPathway) {
-        const prevVal = selectPathway.value || currentPathway;
-        selectPathway.innerHTML = '';
-        dict.pathwayOptions.forEach(opt => {
-          const option = document.createElement('option');
-          option.value = opt.val;
-          option.textContent = opt.label;
-          if (opt.val === prevVal) option.selected = true;
-          selectPathway.appendChild(option);
-        });
+      if (inputSpell) {
+        inputSpell.placeholder = isJa ? 'スペルを入力、または下のキーをタップ...' : 'Type spelling or tap keys below...';
       }
 
       renderAll();
-
-      if (triggerToast) {
-        showToast(dict.toastLangSwitch, true);
-      }
+      showToast(isJa ? '日本語に切り替えました 🇯🇵' : 'Switched to English 🇺🇸', true);
     }
 
-    // --- Render Orchestrator ---
+    // --- Render Active View ---
     function renderAll() {
       const step = getCurrentStep();
-      const dict = i18n[currentLang];
-
+      const isJa = (currentLang === 'ja');
       if (!step) return;
 
-      // 1. Header Badges
       if (badgeStepNumber) badgeStepNumber.textContent = `Step ${step.step}`;
       if (badgeCarbon) badgeCarbon.textContent = step.carbon;
       if (badgeDisease) badgeDisease.textContent = step.diseaseTag;
 
       if (badgeReversibility) {
         if (step.isIrreversible) {
-          badgeReversibility.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/10 text-rose-300 border border-rose-500/20";
-          badgeReversibility.textContent = dict.irreversible;
+          badgeReversibility.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-300 border border-rose-500/20";
+          badgeReversibility.textContent = isJa ? "★ 不可逆" : "★ Irreversible";
         } else {
-          badgeReversibility.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700";
-          badgeReversibility.textContent = dict.reversible;
+          badgeReversibility.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400";
+          badgeReversibility.textContent = isJa ? "可逆" : "Reversible";
         }
       }
 
-      if (currentEnzymeName) {
-        currentEnzymeName.textContent = (currentLang === 'ja') ? step.enzymeJa : step.enzymeEn;
-      }
-      if (pearlDescription) {
-        pearlDescription.textContent = (currentLang === 'ja') ? step.pearlJa : step.pearlEn;
-      }
+      if (currentEnzymeName) currentEnzymeName.textContent = isJa ? step.enzymeJa : step.enzymeEn;
+      if (pearlDescription) pearlDescription.textContent = isJa ? step.pearlJa : step.pearlEn;
 
-      // 2. Target Molecule Name Display
+      // Target Name with Hint Logic
       const targetName = step.nameEn;
       if (targetMoleculeDisplay) {
         if (hintLevel === 'reveal') {
-          targetMoleculeDisplay.textContent = (currentLang === 'ja') ? `${step.nameJa} (${step.nameEn})` : step.nameEn;
+          targetMoleculeDisplay.textContent = isJa ? `${step.nameJa} (${step.nameEn})` : step.nameEn;
         } else if (hintLevel === 'clue') {
-          targetMoleculeDisplay.textContent = (currentLang === 'ja') 
+          targetMoleculeDisplay.textContent = isJa 
             ? `${step.nameJa} [${targetName[0]}... (${targetName.length}文字)]` 
             : `${targetName[0]}... (${targetName.length} letters)`;
         } else {
-          targetMoleculeDisplay.textContent = (currentLang === 'ja') ? `${step.nameJa} (英語スペルを入力)` : "??? (Active Recall)";
+          targetMoleculeDisplay.textContent = isJa ? `${step.nameJa} (英語を入力)` : "??? (Active Recall)";
         }
       }
 
-      if (hintLetterCount) {
-        hintLetterCount.textContent = (currentLang === 'ja') ? `英語 ${targetName.length} 文字` : `${targetName.length} letters`;
+      // Net Yield Label
+      const netLabel = document.getElementById('label-net-summary');
+      if (netLabel) {
+        if (step.atpDelta !== 0) {
+          netLabel.textContent = `${step.atpDelta > 0 ? '+' : ''}${step.atpDelta} ATP`;
+        } else if (step.nadhDelta !== 0) {
+          netLabel.textContent = `+${step.nadhDelta} NADH`;
+        } else {
+          netLabel.textContent = step.carbon;
+        }
       }
 
-      // 3. Render Skeleton Tiles
+      // Step Counters
+      const data = getDataset();
+      const badgeCurrent = document.getElementById('meter-step-badge');
+      const badgeTotal = document.getElementById('meter-step-total');
+      if (badgeCurrent) badgeCurrent.textContent = step.step;
+      if (badgeTotal) badgeTotal.textContent = data.length;
+
+      const comboMeter = document.getElementById('meter-combo');
+      if (comboMeter) comboMeter.textContent = comboStreak;
+
       renderSkeletonTiles(targetName);
 
-      // 4. Update Energy Dashboard
-      updateDashboard();
-
-      // 5. Render Left Flow Roadmap
-      renderPathwayFlow();
-
-      // 6. Update Exploration / Molecular Scenes
       if (appMode === 'explore') renderExploreView();
       if (appMode === 'molecular') renderMolecularScene();
+      if (appMode === 'case') renderClinicalCase();
     }
 
-    // --- Skeleton Tiles with Responsive Caret ---
+    // --- Skeleton Tiles & Cursor Sync ---
     function renderSkeletonTiles(targetWord) {
       if (!spellingSkeleton) return;
       spellingSkeleton.innerHTML = '';
@@ -1092,8 +1268,8 @@
 
         let tileClass = "relative w-7 h-9 sm:w-8 sm:h-10 flex items-center justify-center rounded-lg border font-mono text-base sm:text-lg transition-all cursor-pointer ";
 
-        if (char === ' ' || char === '-' || char === ',') {
-          tile.className = "w-4 h-9 flex items-center justify-center text-slate-500 font-bold select-none";
+        if (char === ' ' || char === '-' || char === ',' || char === '(' || char === ')') {
+          tile.className = "w-3 sm:w-4 h-9 flex items-center justify-center text-slate-500 font-bold select-none text-sm";
           tile.textContent = char;
         } else if (index < typedLetters.length) {
           const isMatch = (typedLetters[index].toLowerCase() === char.toLowerCase());
@@ -1105,7 +1281,7 @@
             tile.textContent = typedLetters[index];
           }
         } else if (index === 0 && (hintLevel === 'clue' || hintLevel === 'reveal')) {
-          tile.className = tileClass + "bg-slate-800/80 border-slate-700 text-slate-300 font-bold";
+          tile.className = tileClass + "bg-slate-800 border-slate-700 text-slate-300 font-bold";
           tile.textContent = char;
         } else if (hintLevel === 'reveal') {
           tile.className = tileClass + "bg-slate-900 border-slate-700 text-slate-400 font-semibold";
@@ -1115,11 +1291,10 @@
           tile.textContent = '·';
         }
 
-        // Active Caret Indicator
         if (isCurrentCaret) {
           tile.classList.add('ring-2', 'ring-emerald-400', 'border-emerald-400', 'bg-slate-800');
           const caret = document.createElement('div');
-          caret.className = "absolute bottom-1 w-4 h-0.5 bg-emerald-400 cursor-caret";
+          caret.className = "absolute bottom-1 w-3.5 h-0.5 bg-emerald-400 cursor-caret";
           tile.appendChild(caret);
         }
 
@@ -1137,7 +1312,7 @@
       });
     }
 
-    // --- Input & Caret Synchronization ---
+    // --- Keyboard & Input Logic ---
     function onInputChanged(val) {
       userTyped = val;
       if (inputSpell) {
@@ -1163,19 +1338,18 @@
       renderSkeletonTiles(getCurrentStep().nameEn);
     }
 
-    // --- On-Screen Virtual Keyboard ---
     function pressVirtualKey(char) {
       const pos = currentCursorPos;
       userTyped = userTyped.slice(0, pos) + char + userTyped.slice(pos);
       currentCursorPos = pos + char.length;
-      
+
       if (inputSpell) {
         inputSpell.value = userTyped;
         inputSpell.focus();
         inputSpell.setSelectionRange(currentCursorPos, currentCursorPos);
       }
-      
       if (feedbackMessage) feedbackMessage.textContent = "";
+      playTone(440, 'sine', 0.04, 0.05);
       renderSkeletonTiles(getCurrentStep().nameEn);
     }
 
@@ -1190,13 +1364,13 @@
           inputSpell.focus();
           inputSpell.setSelectionRange(currentCursorPos, currentCursorPos);
         }
-
         if (feedbackMessage) feedbackMessage.textContent = "";
+        playTone(330, 'sine', 0.04, 0.05);
         renderSkeletonTiles(getCurrentStep().nameEn);
       }
     }
 
-    // --- Answer Submission & Validation ---
+    // --- Submit & Progression ---
     function handleSpellSubmit(e) {
       if (e) e.preventDefault();
       const step = getCurrentStep();
@@ -1204,40 +1378,41 @@
       const cleanTarget = step.nameEn.toLowerCase();
 
       const isExact = (cleanInput === cleanTarget);
-      const isJapaneseMatch = (userTyped.trim() === step.nameJa);
+      const isJaMatch = (userTyped.trim() === step.nameJa);
 
-      if (isExact || isJapaneseMatch) {
-        showToast((currentLang === 'ja') ? "✅ 正解！次のステップへ進みます。" : "✅ Correct! Moving to next reaction.", true);
+      if (isExact || isJaMatch) {
+        comboStreak++;
+        if (comboStreak > 1) {
+          soundCombo();
+          showToast(`🔥 ${comboStreak} COMBO!`, true);
+        } else {
+          soundSuccess();
+          showToast((currentLang === 'ja') ? "✅ 正解！" : "✅ Correct!", true);
+        }
+
         if (feedbackMessage) {
-          feedbackMessage.className = "text-xs font-bold text-emerald-400 mt-2";
-          feedbackMessage.textContent = (currentLang === 'ja') 
-            ? `正解！${step.nameJa} (${step.nameEn})` 
-            : `Correct! ${step.nameEn}`;
+          feedbackMessage.className = "text-xs font-bold text-emerald-400 mt-1";
+          feedbackMessage.textContent = (currentLang === 'ja') ? `正解: ${step.nameJa}` : `Correct: ${step.nameEn}`;
         }
 
         setTimeout(() => {
           advanceStep(1);
-        }, 750);
+        }, 600);
       } else {
-        showToast((currentLang === 'ja') ? "❌ スペルが一致しません。" : "❌ Incorrect spelling.", false);
-        if (feedbackMessage) {
-          feedbackMessage.className = "text-xs font-bold text-rose-400 mt-2";
+        comboStreak = 0;
+        soundError();
+        showToast((currentLang === 'ja') ? "❌ 不正解" : "❌ Try again", false);
 
+        if (feedbackMessage) {
+          feedbackMessage.className = "text-xs font-bold text-rose-400 mt-1";
           if (cleanInput.includes("diphosphate") && cleanTarget.includes("bisphosphate")) {
-            feedbackMessage.textContent = (currentLang === 'ja')
-              ? "生化学ポイント: 独立した2つのリン酸には'bisphosphate'を使用します。"
-              : "Biochem Pearl: Use 'bisphosphate' for two distinct phosphates, not 'diphosphate'.";
-          } else if (cleanTarget.includes("-") && !cleanInput.includes("-")) {
-            feedbackMessage.textContent = (currentLang === 'ja')
-              ? "ハイフン（-）を忘れていませんか？（例: Glucose-6-phosphate）"
-              : "Don't forget the hyphen (e.g., Glucose-6-phosphate).";
+            feedbackMessage.textContent = "Use 'bisphosphate' for distinct phosphates!";
           } else {
-            feedbackMessage.textContent = (currentLang === 'ja')
-              ? "頭文字や文字数を確認するには「💡 ヒント」を押してください。"
-              : "Check letter count or tap '💡 Hint'.";
+            feedbackMessage.textContent = (currentLang === 'ja') ? "頭文字を確認するには「💡 ヒント」を押してください" : "Click '💡 Hint' for a clue";
           }
         }
       }
+      renderAll();
     }
 
     function advanceStep(delta) {
@@ -1248,44 +1423,50 @@
       if (inputSpell) inputSpell.value = '';
       if (feedbackMessage) feedbackMessage.textContent = '';
       renderAll();
-      focusNativeInput();
+      if (appMode === 'drill') focusNativeInput();
     }
 
-    // --- Mode Switching ---
+    // --- App Mode Switching ---
     function switchAppMode(mode) {
       appMode = mode;
-      const viewDrill = document.getElementById('view-drill');
-      const viewExplore = document.getElementById('view-explore');
-      const viewMolecular = document.getElementById('view-molecular');
+      const vDrill = document.getElementById('view-drill');
+      const vExplore = document.getElementById('view-explore');
+      const vMol = document.getElementById('view-molecular');
+      const vCase = document.getElementById('view-case');
 
-      const tabDrill = document.getElementById('tab-mode-drill');
-      const tabExplore = document.getElementById('tab-mode-explore');
-      const tabMolecular = document.getElementById('tab-mode-molecular');
+      const tDrill = document.getElementById('tab-mode-drill');
+      const tExplore = document.getElementById('tab-mode-explore');
+      const tMol = document.getElementById('tab-mode-molecular');
+      const tCase = document.getElementById('tab-mode-case');
 
-      [tabDrill, tabExplore, tabMolecular].forEach(tab => {
-        if (tab) tab.className = "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200";
+      [tDrill, tExplore, tMol, tCase].forEach(t => {
+        if (t) t.className = "px-2.5 py-1 rounded-md transition-all text-slate-400 hover:text-slate-200";
       });
 
-      if (viewDrill) viewDrill.classList.add('hidden');
-      if (viewExplore) viewExplore.classList.add('hidden');
-      if (viewMolecular) viewMolecular.classList.add('hidden');
+      if (vDrill) vDrill.classList.add('hidden');
+      if (vExplore) vExplore.classList.add('hidden');
+      if (vMol) vMol.classList.add('hidden');
+      if (vCase) vCase.classList.add('hidden');
 
       if (mode === 'drill') {
-        if (viewDrill) viewDrill.classList.remove('hidden');
-        if (tabDrill) tabDrill.className = "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 font-bold shadow";
+        if (vDrill) vDrill.classList.remove('hidden');
+        if (tDrill) tDrill.className = "px-2.5 py-1 rounded-md transition-all font-bold bg-emerald-500 text-slate-950 shadow-sm";
         focusNativeInput();
       } else if (mode === 'explore') {
-        if (viewExplore) viewExplore.classList.remove('hidden');
-        if (tabExplore) tabExplore.className = "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 font-bold shadow";
+        if (vExplore) vExplore.classList.remove('hidden');
+        if (tExplore) tExplore.className = "px-2.5 py-1 rounded-md transition-all font-bold bg-emerald-500 text-slate-950 shadow-sm";
         renderExploreView();
       } else if (mode === 'molecular') {
-        if (viewMolecular) viewMolecular.classList.remove('hidden');
-        if (tabMolecular) tabMolecular.className = "px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 font-bold shadow";
+        if (vMol) vMol.classList.remove('hidden');
+        if (tMol) tMol.className = "px-2.5 py-1 rounded-md transition-all font-bold bg-emerald-500 text-slate-950 shadow-sm";
         renderMolecularScene();
+      } else if (mode === 'case') {
+        if (vCase) vCase.classList.remove('hidden');
+        if (tCase) tCase.className = "px-2.5 py-1 rounded-md transition-all font-bold bg-amber-500 text-slate-950 shadow-sm";
+        renderClinicalCase();
       }
     }
 
-    // --- Hint Level Toggles ---
     function setHintLevel(lvl) {
       hintLevel = lvl;
       const bBlind = document.getElementById('btn-hint-blind');
@@ -1293,187 +1474,66 @@
       const bReveal = document.getElementById('btn-hint-reveal');
 
       [bBlind, bClue, bReveal].forEach(b => {
-        if (b) b.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-semibold";
+        if (b) b.className = "px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 transition-all";
       });
 
-      if (lvl === 'blind' && bBlind) bBlind.className = "px-2.5 py-1 rounded-lg text-slate-950 bg-emerald-400 font-bold shadow";
-      if (lvl === 'clue' && bClue) bClue.className = "px-2.5 py-1 rounded-lg text-slate-950 bg-amber-400 font-bold shadow";
-      if (lvl === 'reveal' && bReveal) bReveal.className = "px-2.5 py-1 rounded-lg text-slate-950 bg-cyan-400 font-bold shadow";
+      if (lvl === 'blind' && bBlind) bBlind.className = "px-2 py-0.5 rounded bg-emerald-400 text-slate-950 font-bold shadow";
+      if (lvl === 'clue' && bClue) bClue.className = "px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-bold shadow";
+      if (lvl === 'reveal' && bReveal) bReveal.className = "px-2 py-0.5 rounded bg-cyan-400 text-slate-950 font-bold shadow";
 
       renderAll();
     }
 
-    // --- Pathway Selection ---
     function onPathwayChanged(val) {
       currentPathway = val;
       currentStepIndex = 0;
+      comboStreak = 0;
       userTyped = '';
       currentCursorPos = 0;
       if (inputSpell) inputSpell.value = '';
       if (feedbackMessage) feedbackMessage.textContent = '';
       renderAll();
-      focusNativeInput();
+      if (appMode === 'drill') focusNativeInput();
     }
 
-    // --- Left Flow Roadmap Render (Clearly Differs in JA vs EN) ---
-    function renderPathwayFlow() {
-      if (!pathwayFlowContainer) return;
-      const data = getDataset();
-      pathwayFlowContainer.innerHTML = '';
-
-      data.forEach((item, idx) => {
-        const isCurrent = (idx === currentStepIndex);
-        const card = document.createElement('div');
-
-        card.className = `p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-          isCurrent 
-            ? 'bg-slate-900 border-emerald-500 shadow-md ring-1 ring-emerald-500/50' 
-            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900/40'
-        }`;
-
-        card.onclick = () => {
-          currentStepIndex = idx;
-          userTyped = '';
-          currentCursorPos = 0;
-          if (inputSpell) inputSpell.value = '';
-          if (feedbackMessage) feedbackMessage.textContent = '';
-          renderAll();
-          if (appMode === 'drill') focusNativeInput();
-        };
-
-        // Title and Subtitle distinctly vary by language
-        let mainTitle = '';
-        let subTitle = '';
-
-        if (currentLang === 'ja') {
-          // Japanese Mode: Japanese primary, English secondary
-          if (isCurrent && hintLevel === 'blind') {
-            mainTitle = item.nameJa;
-            subTitle = '??? (英語スペルを入力)';
-          } else if (isCurrent && hintLevel === 'clue') {
-            mainTitle = item.nameJa;
-            subTitle = `${item.nameEn[0]}... (${item.nameEn.length}文字)`;
-          } else {
-            mainTitle = item.nameJa;
-            subTitle = item.nameEn;
-          }
-        } else {
-          // English Mode: English primary, Enzyme secondary
-          if (isCurrent && hintLevel === 'blind') {
-            mainTitle = '??? (Type here)';
-            subTitle = item.enzymeEn;
-          } else if (isCurrent && hintLevel === 'clue') {
-            mainTitle = `${item.nameEn[0]}... (${item.nameEn.length} letters)`;
-            subTitle = item.enzymeEn;
-          } else {
-            mainTitle = item.nameEn;
-            subTitle = item.enzymeEn;
-          }
-        }
-
-        const enzymeLabel = (currentLang === 'ja') ? item.enzymeJa : item.enzymeEn;
-
-        card.innerHTML = `
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-6 h-6 rounded-md font-mono text-xs flex items-center justify-center font-bold shrink-0 ${
-              isCurrent ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'
-            }">${item.step}</span>
-            <div class="min-w-0">
-              <div class="text-xs sm:text-sm font-bold truncate ${isCurrent ? 'text-emerald-400' : 'text-slate-200'}">
-                ${mainTitle}
-              </div>
-              <div class="text-[11px] text-slate-400 truncate">
-                ${subTitle}
-              </div>
-              <div class="text-[10px] text-slate-500 truncate">
-                ${enzymeLabel}
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-1 text-[11px] font-mono shrink-0 ml-2">
-            <span class="text-slate-400">${item.carbon}</span>
-            ${item.isIrreversible ? '<span class="text-rose-400 font-bold ml-1">★</span>' : ''}
-          </div>
-        `;
-
-        pathwayFlowContainer.appendChild(card);
-      });
-    }
-
-    // --- Energy Dashboard Calculations ---
-    function updateDashboard() {
-      const data = getDataset();
-      let netAtp = 0;
-      let netNadh = 0;
-
-      for (let i = 0; i <= currentStepIndex; i++) {
-        netAtp += data[i].atpDelta;
-        netNadh += data[i].nadhDelta;
-      }
-
-      const meterAtp = document.getElementById('meter-atp');
-      const meterNadh = document.getElementById('meter-nadh');
-      const meterProgress = document.getElementById('meter-progress');
-
-      if (meterAtp) meterAtp.textContent = (netAtp >= 0 ? `+${netAtp}` : `${netAtp}`);
-      if (meterNadh) meterNadh.textContent = (netNadh >= 0 ? `+${netNadh}` : `${netNadh}`);
-      if (meterProgress) meterProgress.textContent = `${currentStepIndex + 1} / ${data.length}`;
-
-      const badgePhase = document.getElementById('badge-phase');
-      if (badgePhase) {
-        if (currentPathway === 'glycolysis') {
-          if (currentStepIndex < 4) {
-            badgePhase.textContent = (currentLang === 'ja') ? "準備期: -2 ATP消費" : "Preparatory Phase: -2 ATP";
-            badgePhase.className = "px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20";
-          } else {
-            badgePhase.textContent = (currentLang === 'ja') ? "払戻期: +4 ATP, +2 NADH回収" : "Payoff Phase: +4 ATP, +2 NADH";
-            badgePhase.className = "px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20";
-          }
-        } else {
-          badgePhase.textContent = (currentLang === 'ja') ? "TCA循環: 3 NADH, 1 FADH2, 1 GTP" : "TCA Cycle: 3 NADH, 1 FADH2, 1 GTP";
-          badgePhase.className = "px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20";
-        }
-      }
-    }
-
-    // --- Explore View Populator ---
+    // --- Explore Roadmap List ---
     function renderExploreView() {
       const container = document.getElementById('explore-full-list');
       if (!container) return;
       const data = getDataset();
       container.innerHTML = '';
 
-      data.forEach(item => {
+      data.forEach((item, idx) => {
         const itemBox = document.createElement('div');
-        itemBox.className = "p-3.5 bg-slate-900 rounded-xl border border-slate-800 space-y-2";
+        itemBox.className = "p-3 bg-slate-900 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-between";
+        
+        itemBox.onclick = () => {
+          currentStepIndex = idx;
+          switchAppMode('drill');
+        };
 
-        const titleText = (currentLang === 'ja')
-          ? `${item.nameJa} <span class="text-xs text-emerald-400 font-mono">(${item.nameEn})</span>`
-          : `${item.nameEn} <span class="text-xs text-slate-400 font-sans">(${item.nameJa})</span>`;
-
+        const isJa = (currentLang === 'ja');
         itemBox.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold flex items-center justify-center">${item.step}</span>
-              <h4 class="font-bold text-sm text-white">${titleText}</h4>
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold flex items-center justify-center shrink-0">${item.step}</span>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white">${isJa ? item.nameJa : item.nameEn} <span class="text-slate-500 font-mono text-xs">(${isJa ? item.nameEn : item.nameJa})</span></div>
+              <div class="text-[11px] text-slate-400">${isJa ? item.enzymeJa : item.enzymeEn}</div>
             </div>
-            <span class="text-xs font-mono font-bold text-slate-400">${item.carbon}</span>
           </div>
-          <div class="text-xs text-slate-300">
-            <span class="text-slate-500 font-semibold">${currentLang === 'ja' ? '触媒酵素:' : 'Enzyme:'}</span> ${(currentLang === 'ja') ? item.enzymeJa : item.enzymeEn}
-          </div>
-          <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800/80 text-xs text-slate-300 flex items-start gap-2">
-            <span class="text-amber-400 font-bold shrink-0">⚡</span>
-            <span>${(currentLang === 'ja') ? item.pearlJa : item.pearlEn}</span>
+          <div class="flex items-center gap-1.5 font-mono text-xs text-slate-400 shrink-0">
+            <span>${item.carbon}</span>
+            <span class="text-emerald-400 font-bold">➔</span>
           </div>
         `;
         container.appendChild(itemBox);
       });
     }
 
-    // --- Molecular Dynamics Scene Updater ---
+    // --- Molecular Scene Logic ---
     function renderMolecularScene() {
       const step = getCurrentStep();
+      const isJa = (currentLang === 'ja');
       if (!step) return;
 
       const safeText = (id, text) => {
@@ -1481,28 +1541,138 @@
         if (el) el.textContent = text;
       };
 
-      safeText('label-current-loc', (currentLang === 'ja') ? step.locationJa : step.locationEn);
-      safeText('anim-step-badge', (currentLang === 'ja') ? `ステップ ${step.step} の変化` : `Step ${step.step} Transformation`);
-      safeText('anim-substrate-name', (currentLang === 'ja') ? step.nameJa : step.nameEn);
+      safeText('label-current-loc', isJa ? step.locationJa : step.locationEn);
+      safeText('anim-substrate-name', isJa ? step.nameJa : step.nameEn);
       safeText('anim-substrate-c', step.carbon);
-      safeText('anim-product-name', (currentLang === 'ja') ? step.nextNameJa : step.nextNameEn);
-      safeText('anim-enzyme-tag', (currentLang === 'ja') ? step.enzymeJa : step.enzymeEn);
-      safeText('anim-mechanics-desc', (currentLang === 'ja') ? step.mechanicsJa : step.mechanicsEn);
+      safeText('anim-product-name', isJa ? step.nextNameJa : step.nextNameEn);
+      safeText('anim-enzyme-tag', isJa ? step.enzymeJa : step.enzymeEn);
+      safeText('anim-mechanics-desc', isJa ? step.mechanicsJa : step.mechanicsEn);
 
-      // Move Pin to exact organelle
       const pin = document.getElementById('svg-location-pin');
       const pinText = document.getElementById('svg-pin-text');
-      if (pinText) pinText.textContent = (currentLang === 'ja') ? step.enzymeJa : step.enzymeEn;
+      if (pinText) pinText.textContent = isJa ? step.enzymeJa : step.enzymeEn;
 
       if (pin) {
         if (step.locationEn.includes("Matrix")) {
-          pin.setAttribute('transform', 'translate(320, 115)');
+          pin.setAttribute('transform', 'translate(330, 100)');
         } else if (step.locationEn.includes("Inner Membrane")) {
-          pin.setAttribute('transform', 'translate(220, 100)');
+          pin.setAttribute('transform', 'translate(230, 90)');
+        } else if (step.locationEn.includes("Endoplasmic")) {
+          pin.setAttribute('transform', 'translate(80, 120)');
         } else {
-          pin.setAttribute('transform', 'translate(100, 100)');
+          pin.setAttribute('transform', 'translate(100, 90)');
         }
       }
+    }
+
+    // --- USMLE Clinical Case Logic ---
+    function renderClinicalCase() {
+      const c = clinicalCases[currentCaseIndex];
+      const isJa = (currentLang === 'ja');
+      if (!c) return;
+
+      const ind = document.getElementById('case-index-indicator');
+      if (ind) ind.textContent = `Case ${currentCaseIndex + 1} / ${clinicalCases.length}`;
+
+      const badge = document.getElementById('case-topic-badge');
+      if (badge) badge.textContent = isJa ? c.topicJa : c.topicEn;
+
+      const scenario = document.getElementById('case-scenario-text');
+      if (scenario) scenario.textContent = isJa ? c.scenarioJa : c.scenarioEn;
+
+      const q = document.getElementById('case-question-text');
+      if (q) q.textContent = isJa ? c.questionJa : c.questionEn;
+
+      const optionsBox = document.getElementById('case-options-container');
+      const explanationBox = document.getElementById('case-explanation-box');
+      if (explanationBox) explanationBox.classList.add('hidden');
+
+      if (optionsBox) {
+        optionsBox.innerHTML = '';
+        c.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs sm:text-sm font-semibold transition-all flex items-center justify-between";
+          
+          const optText = isJa ? opt.textJa : opt.textEn;
+          const letter = String.fromCharCode(65 + idx);
+
+          btn.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-slate-800 font-mono text-xs flex items-center justify-center font-bold text-slate-300">${letter}</span>
+              <span class="text-slate-200">${optText}</span>
+            </div>
+          `;
+
+          btn.onclick = () => selectCaseOption(opt, btn);
+          optionsBox.appendChild(btn);
+        });
+      }
+    }
+
+    function selectCaseOption(opt, btnElement) {
+      const c = clinicalCases[currentCaseIndex];
+      const isJa = (currentLang === 'ja');
+      const explanationBox = document.getElementById('case-explanation-box');
+      const resultTitle = document.getElementById('case-result-title');
+      const expText = document.getElementById('case-explanation-text');
+      const allButtons = document.querySelectorAll('#case-options-container button');
+
+      allButtons.forEach(b => b.disabled = true);
+
+      if (opt.isCorrect) {
+        soundSuccess();
+        comboStreak++;
+        btnElement.classList.add('bg-emerald-950', 'border-emerald-500', 'text-emerald-300');
+        if (explanationBox) explanationBox.className = "p-3.5 rounded-xl border border-emerald-500/50 bg-emerald-950/40 text-xs sm:text-sm space-y-2";
+        if (resultTitle) resultTitle.innerHTML = `<span class="text-emerald-400">✅ Correct!</span>`;
+      } else {
+        soundError();
+        comboStreak = 0;
+        btnElement.classList.add('bg-rose-950', 'border-rose-500', 'text-rose-300');
+        if (explanationBox) explanationBox.className = "p-3.5 rounded-xl border border-rose-500/50 bg-rose-950/40 text-xs sm:text-sm space-y-2";
+        if (resultTitle) resultTitle.innerHTML = `<span class="text-rose-400">❌ Incorrect</span>`;
+      }
+
+      if (expText) expText.textContent = isJa ? c.explanationJa : c.explanationEn;
+      if (explanationBox) explanationBox.classList.remove('hidden');
+      renderAll();
+    }
+
+    function nextCaseQuestion() {
+      currentCaseIndex = (currentCaseIndex + 1) % clinicalCases.length;
+      renderClinicalCase();
+    }
+
+    // --- Anki CSV Exporter ---
+    function exportToAnkiCSV() {
+      const data = getDataset();
+      const pathwayTitle = currentPathway.toUpperCase();
+      let csv = "#separator:Tab\n#html:true\n#tags column:4\n";
+
+      data.forEach(item => {
+        const front = `<b>[${pathwayTitle}] Step ${item.step}:</b> Molecule catalyzed by <i>${item.enzymeEn}</i>?`;
+        const back = `<b>${item.nameEn}</b> (${item.nameJa})<br><hr><small><b>High-Yield:</b> ${item.pearlEn}</small>`;
+        const tags = `BioPathway ${currentPathway}`;
+        csv += `${front}\t${back}\t\t${tags}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/tab-separated-values;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `BioPathway_${currentPathway}_Anki.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast((currentLang === 'ja') ? "📥 Anki用CSVを保存しました！" : "📥 Exported Anki Flashcards (.csv)!", true);
+      soundSuccess();
+    }
+
+    // --- Mobile Settings Drawer ---
+    function toggleSettingsDrawer() {
+      const drawer = document.getElementById('settings-drawer');
+      if (drawer) drawer.classList.toggle('hidden');
     }
 
     // --- Toast Alert Helper ---
@@ -1513,14 +1683,13 @@
       const text = document.getElementById('toast-text');
 
       if (!box || !content) return;
-
       if (icon) icon.textContent = isSuccess ? '✅' : '⚠️';
       if (text) text.textContent = msg;
 
       if (isSuccess) {
-        content.className = "px-4 py-3 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2";
+        content.className = "px-3.5 py-2.5 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 shadow-xl text-xs font-bold flex items-center gap-2";
       } else {
-        content.className = "px-4 py-3 rounded-xl bg-rose-950 border border-rose-500 text-rose-200 shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2";
+        content.className = "px-3.5 py-2.5 rounded-xl bg-rose-950 border border-rose-500 text-rose-200 shadow-xl text-xs font-bold flex items-center gap-2";
       }
 
       box.classList.remove('opacity-0', 'translate-y-3');
@@ -1529,19 +1698,21 @@
       setTimeout(() => {
         box.classList.remove('opacity-100', 'translate-y-0');
         box.classList.add('opacity-0', 'translate-y-3');
-      }, 2200);
+      }, 1800);
     }
 
-    // --- Defensive Boot Initialization ---
+    // --- Defensive Initialization ---
     function initApp() {
-      cacheDomElements();
+      cacheDom();
       let preferredLang = 'en';
       try {
-        const saved = localStorage.getItem('bp_master_lang');
+        const saved = localStorage.getItem('bp_clean_lang');
         if (saved === 'ja' || saved === 'en') preferredLang = saved;
       } catch (e) {}
 
-      setLanguage(preferredLang, false);
+      if (preferredLang === 'ja') toggleLanguage();
+      else renderAll();
+
       focusNativeInput();
     }
 
