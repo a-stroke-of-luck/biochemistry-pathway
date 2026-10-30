@@ -132,13 +132,13 @@
     </div>
   </header>
 
-  <!-- Sub-Navigation (5 Modes: Visual Input is Featured!) -->
+  <!-- Sub-Navigation (5 Modes) -->
   <nav class="bg-slate-900/60 border-b border-slate-800/80 px-2 sm:px-6 py-1.5 sticky top-[49px] z-30 backdrop-blur-md">
     <div class="max-w-4xl mx-auto flex items-center justify-between text-xs gap-1 overflow-x-auto">
       
       <!-- Mode Switcher -->
       <div class="flex items-center gap-1 font-medium shrink-0">
-        <!-- Brand New Visual Learn (Input) Tab -->
+        <!-- Visual Learn (Input) Tab -->
         <button 
           id="tab-mode-learn" 
           type="button" 
@@ -213,9 +213,103 @@
           解糖系の核心メカニズム（視覚的インプット）
         </h2>
         <p id="learn-main-desc" class="text-xs text-slate-300 leading-relaxed">
-          単なる丸暗記ではなく、「なぜその反応が起きるのか」「ホルモンや受容体とどう連動するのか」をインタラクティブな図解で体感しましょう。
+          単なる丸暗記ではなく、「なぜその反応が起きるのか」「分子がどう変化するのか」をインタラクティブな図解で体感しましょう。
         </p>
       </div>
+
+      <!-- ★ NEW: INTERACTIVE MOLECULE SELECTOR (ここだけで色々な分子が選べる機能) ★ -->
+      <section class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border-2 border-cyan-500/40 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 font-bold flex items-center justify-center text-xs shadow">🧪</span>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-white" id="title-mol-selector">インタラクティブ分子エクスプローラー</h3>
+              <p class="text-[11px] text-slate-400" id="sub-mol-selector">タップした分子の構造変化・リン酸位置・代謝の行き先をその場で確認</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">13 Molecules</span>
+        </div>
+
+        <!-- Molecule Selector Palette (Horizontal scrollable pills) -->
+        <div>
+          <div class="text-[11px] font-bold text-slate-400 mb-1.5 flex items-center justify-between">
+            <span>👇 分子を選択してください（左右にスクロール可能）：</span>
+            <span id="selected-carbon-pill" class="font-mono text-emerald-400 text-[10px] bg-slate-950 px-2 py-0.5 rounded border border-slate-800">C6 (Hexose)</span>
+          </div>
+          <div id="molecule-palette-bar" class="flex gap-1.5 overflow-x-auto pb-2 pt-0.5 no-scrollbar">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- In-place Molecule Inspector Card -->
+        <div id="molecule-inspector-card" class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3.5 transition-all">
+          
+          <!-- Top Row: Names, Formula & Type -->
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 id="insp-mol-name" class="text-base sm:text-lg font-bold text-emerald-300 font-mono">Glucose</h4>
+                <span id="insp-mol-badge-p" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">0 Phosphate</span>
+              </div>
+              <div id="insp-mol-ja" class="text-xs text-slate-400 mt-0.5">グルコース（六炭糖）</div>
+            </div>
+
+            <!-- Jump to Practice Button -->
+            <button 
+              type="button" 
+              id="btn-insp-jump-practice"
+              onclick="jumpToPracticeFromInspector()"
+              class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500 border border-emerald-500/40 text-emerald-300 hover:text-slate-950 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-sm"
+            >
+              <span>✍️</span>
+              <span id="label-insp-jump">この分子を特訓</span>
+            </button>
+          </div>
+
+          <!-- Middle Row: Interactive Graphic + Structural Insights -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Dynamic Molecule Schematic Graphic (SVG) -->
+            <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 flex flex-col items-center justify-center min-h-[140px]">
+              <div id="insp-svg-container" class="w-full flex justify-center">
+                <!-- SVG dynamically injected -->
+              </div>
+              <div id="insp-svg-caption" class="text-[10px] font-mono text-slate-400 mt-2 text-center">
+                Neutral Hexose (No phosphate)
+              </div>
+            </div>
+
+            <!-- Key Properties & Reactions -->
+            <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <div>
+                <span class="text-[10px] font-mono uppercase text-slate-500 block">Catalyzed By (酵素)</span>
+                <span id="insp-prop-enzyme" class="font-bold text-slate-200">Hexokinase / Glucokinase</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase text-slate-500 block">Structural Keypoint (構造的特徴)</span>
+                <span id="insp-prop-structure" class="text-slate-300 leading-snug block">C6アルドヘキソース。GLUT1〜4により細胞内へ輸送される。</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase text-amber-400 block font-bold">⚡ Metabolic Crossroad / Fates (代謝の行き先)</span>
+                <span id="insp-prop-fates" class="text-amber-200/90 font-medium leading-snug block">解糖系へ突入（不可逆的リン酸化）</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom: Clinical Significance / USMLE High-Yield -->
+          <div class="p-2.5 rounded-lg bg-cyan-950/30 border border-cyan-500/30 text-xs space-y-1">
+            <span class="font-bold text-cyan-300 flex items-center gap-1 text-[11px]">
+              <span>💡</span>
+              <span id="insp-label-pearl">臨床・試験ハイライト（Clinical & Board High-Yield）</span>
+            </span>
+            <p id="insp-prop-pearl" class="text-slate-300 leading-relaxed text-[11px]">
+              細胞内に入ったグルコースはHK/GKにより即座にG6Pに変換され、細胞膜を通過できなくなります（トラッピング機構）。
+            </p>
+          </div>
+
+        </div>
+      </section>
 
       <!-- Module 1: GLUT Transporters & Pancreatic Beta-cell Cascade -->
       <section class="p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
@@ -1362,6 +1456,231 @@
       ]
     };
 
+    // --- NEW: 13 In-depth Inspector Molecules for Glycolysis & Related Pathways ---
+    const inspectorMolecules = [
+      {
+        id: "glc",
+        nameEn: "Glucose",
+        nameJa: "グルコース",
+        carbon: "C6",
+        phosphates: 0,
+        linkedStep: 0, // step 1 in drill
+        enzymeEn: "Hexokinase (HK) / Glucokinase (GK)",
+        enzymeJa: "ヘキソキナーゼ / グルコキナーゼ",
+        structureEn: "Neutral aldohexose ring. Enters via GLUT1-4 transporters.",
+        structureJa: "中性のアルドヘキソース六員環。GLUT1〜4により促通拡散。",
+        fatesEn: "Trapped into G6P by irreversible phosphorylation (-1 ATP).",
+        fatesJa: "不可逆的なリン酸化により細胞内へトラップ（-1 ATP）。",
+        pearlEn: "Phosphorylation traps glucose inside cell; G6P cannot pass GLUT transporters.",
+        pearlJa: "リン酸基が付くことで負電荷を帯び、GLUTから細胞外へ脱出不能になります。",
+        svgType: "hexose-0p"
+      },
+      {
+        id: "g6p",
+        nameEn: "Glucose-6-phosphate",
+        nameJa: "グルコース-6-リン酸 (G6P)",
+        carbon: "C6",
+        phosphates: 1,
+        linkedStep: 1,
+        enzymeEn: "Phosphoglucose isomerase (PGI)",
+        enzymeJa: "ホスホヘキソースイソメラーゼ",
+        structureEn: "Hexose ring phosphorylated at C6 carbon (-OPO3^2-).",
+        structureJa: "C6位の水酸基にリン酸基が1つ結合。",
+        fatesEn: "MAJOR CROSSROAD: Glycolysis, Glycogen synthesis, or HMP Shunt (NADPH).",
+        fatesJa: "【代謝の超重要交差点】解糖系、グリコーゲン合成、ペントースリン酸回路へ分岐。",
+        pearlEn: "G6P inhibits Hexokinase I-III allosterically, but NOT Glucokinase.",
+        pearlJa: "HKはG6Pでアロステリック阻害されますが、肝・膵のGKは阻害されません。",
+        svgType: "hexose-1p"
+      },
+      {
+        id: "f6p",
+        nameEn: "Fructose-6-phosphate",
+        nameJa: "フルクトース-6-リン酸 (F6P)",
+        carbon: "C6",
+        phosphates: 1,
+        linkedStep: 2,
+        enzymeEn: "Phosphofructokinase-1 (PFK-1)",
+        enzymeJa: "ホスホフルクトキナーゼ-1",
+        structureEn: "Ketohexose furanose (5-membered) ring with C6 phosphate.",
+        structureJa: "五員環のフラノース型ケトヘキソース（C6位にリン酸）。",
+        fatesEn: "Phosphorylated to F-1,6-BP by PFK-1 or to F-2,6-BP by PFK-2.",
+        fatesJa: "PFK-1によりF1,6BPへ進むか、PFK-2により微量制御因子F2,6BPへ変換。",
+        pearlEn: "Substrate for the ultimate rate-limiting commit step of glycolysis.",
+        pearlJa: "解糖系の完全な不可逆・専任段階（PFK-1）への基質となります。",
+        svgType: "pentose-1p"
+      },
+      {
+        id: "fbp",
+        nameEn: "Fructose-1,6-bisphosphate",
+        nameJa: "フルクトース-1,6-ビスリン酸 (FBP)",
+        carbon: "C6",
+        phosphates: 2,
+        linkedStep: 3,
+        enzymeEn: "Aldolase",
+        enzymeJa: "アルドラーゼ",
+        structureEn: "Symmetric hexose with phosphates on BOTH terminal ends (C1 & C6).",
+        structureJa: "C1位とC6位の両末端にリン酸基を持つ対称的な分子。",
+        fatesEn: "Cleaved down the middle into two C3 trioses (GAP & DHAP).",
+        fatesJa: "中央から2分割され、C3のGAPとDHAPへ開裂。",
+        pearlEn: "Acts as a feed-forward positive activator for Pyruvate Kinase (PK).",
+        pearlJa: "下流のピルビン酸キナーゼ（PK）を前進的に活性化（Feed-forward）します。",
+        svgType: "pentose-2p"
+      },
+      {
+        id: "dhap",
+        nameEn: "Dihydroxyacetone phosphate",
+        nameJa: "ジヒドロキシアセトンリン酸 (DHAP)",
+        carbon: "C3",
+        phosphates: 1,
+        linkedStep: 4,
+        enzymeEn: "Triose phosphate isomerase (TPI)",
+        enzymeJa: "トリオースリン酸イソメラーゼ",
+        structureEn: "Ketotriose with phosphate on C1 terminal.",
+        structureJa: "C1位にリン酸を持つケトトリオース（C=Oケトン基）。",
+        fatesEn: "Isomerized to GAP for glycolysis OR converted to Glycerol-3-P.",
+        fatesJa: "GAPへ異性化、またはグリセロール-3-リン酸となって中性脂肪合成へ流出。",
+        pearlEn: "Crucial biochemical bridge linking glycolysis to triglyceride lipid storage.",
+        pearlJa: "解糖系と中性脂肪（トリグリセリド）合成・グリセロールシャトルを繋ぐ架け橋。",
+        svgType: "triose-1p-keto"
+      },
+      {
+        id: "gap",
+        nameEn: "Glyceraldehyde 3-phosphate",
+        nameJa: "グリセルアルデヒド-3-リン酸 (GAP)",
+        carbon: "C3",
+        phosphates: 1,
+        linkedStep: 5,
+        enzymeEn: "GAPDH",
+        enzymeJa: "グリセルアルデヒド-3-リン酸脱水素酵素",
+        structureEn: "Aldotriose with reactive aldehyde group at C1.",
+        structureJa: "C1位にアルデヒド基（-CHO）を持つアルドトリオース。",
+        fatesEn: "Enters payoff phase; oxidized with Pi to produce NADH & 1,3-BPG.",
+        fatesJa: "払い戻し期へ突入。無機リン酸(Pi)と反応しNADHと1,3-BPGを生成。",
+        pearlEn: "Site of Arsenic poisoning (arsenate substitutes for Pi, yielding no ATP).",
+        pearlJa: "ヒ素中毒の標的段階。ヒ酸がPiの代わりに結合し、正味ATP産生がゼロになります。",
+        svgType: "triose-1p-aldo"
+      },
+      {
+        id: "13bpg",
+        nameEn: "1,3-Bisphosphoglycerate",
+        nameJa: "1,3-ビスホスホグリセリン酸 (1,3-BPG)",
+        carbon: "C3",
+        phosphates: 2,
+        linkedStep: 6,
+        enzymeEn: "Phosphoglycerate kinase (PGK)",
+        enzymeJa: "ホスホグリセリン酸キナーゼ",
+        structureEn: "Contains ultra-high-energy mixed acyl-phosphate anhydride bond at C1.",
+        structureJa: "C1位に極めて高エネルギーなアシルリン酸結合（酸無水物）を保持。",
+        fatesEn: "Generates ATP by transferring C1 phosphate to ADP, yielding 3-PG.",
+        fatesJa: "基質レベルのリン酸化でADPへリン酸を渡し、ATPを生成して3-PGへ。",
+        pearlEn: "First substrate-level phosphorylation (+2 ATP per glucose).",
+        pearlJa: "解糖系最初の「基質レベルのリン酸化」（グルコース1分子あたり2 ATP回収）。",
+        svgType: "triose-2p"
+      },
+      {
+        id: "23bpg",
+        nameEn: "2,3-Bisphosphoglycerate",
+        nameJa: "2,3-ビスホスホグリセリン酸 (2,3-BPG)",
+        carbon: "C3",
+        phosphates: 2,
+        linkedStep: 6,
+        enzymeEn: "Bisphosphoglycerate mutase (BPGM, RBC only)",
+        enzymeJa: "ビスホスホグリセリン酸ムターゼ（赤血球特異的）",
+        structureEn: "Isomer of 1,3-BPG with phosphates at C2 & C3 positions.",
+        structureJa: "赤血球特異的シャントで1,3-BPGから生成（C2とC3にリン酸）。",
+        fatesEn: "Binds deoxyhemoglobin cavity, lowering O2 affinity (Right shift).",
+        fatesJa: "デオキシヘモグロビンの中央腔に結合し、酸素を放出しやすくする。",
+        pearlEn: "High altitude, hypoxemia, or PK deficiency increases 2,3-BPG to release more O2.",
+        pearlJa: "高地順応やPK欠損症で増加。末梢組織への酸素受渡しを促進（右方シフト）。",
+        svgType: "triose-2p-shunt"
+      },
+      {
+        id: "3pg",
+        nameEn: "3-Phosphoglycerate",
+        nameJa: "3-ホスホグリセリン酸 (3-PG)",
+        carbon: "C3",
+        phosphates: 1,
+        linkedStep: 7,
+        enzymeEn: "Phosphoglyceromutase (PGM)",
+        enzymeJa: "ホスホグリセロムターゼ",
+        structureEn: "Carboxylic acid with single ester phosphate at C3.",
+        structureJa: "C1位がカルボン酸、C3位にエステル結合リン酸を持つ構造。",
+        fatesEn: "Phosphate shifted to C2 position to form 2-PG (reversible mutase).",
+        fatesJa: "ムターゼによりリン酸基が2位へ移され、2-PGへ変換（可逆）。",
+        pearlEn: "Also serves as precursor for non-essential amino acid Serine synthesis.",
+        pearlJa: "非必須アミノ酸であるセリン生合成の前駆体としても利用されます。",
+        svgType: "triose-1p-acid"
+      },
+      {
+        id: "2pg",
+        nameEn: "2-Phosphoglycerate",
+        nameJa: "2-ホスホグリセリン酸 (2-PG)",
+        carbon: "C3",
+        phosphates: 1,
+        linkedStep: 8,
+        enzymeEn: "Enolase",
+        enzymeJa: "エノラーゼ",
+        structureEn: "Phosphate relocated to central C2 carbon.",
+        structureJa: "中央のC2炭素にリン酸基が結合した構造。",
+        fatesEn: "Dehydrated by Enolase to generate high-energy enol-phosphate PEP.",
+        fatesJa: "エノラーゼによる脱水（-H2O）を受け、高エネルギー化合物PEPへ。",
+        pearlEn: "Enolase is inhibited by Sodium Fluoride (NaF gray-top blood tubes).",
+        pearlJa: "エノラーゼはフッ化ナトリウム（採血管NaF）で強力に阻害されます。",
+        svgType: "triose-1p-c2"
+      },
+      {
+        id: "pep",
+        nameEn: "Phosphoenolpyruvate",
+        nameJa: "ホスホエノールピルビン酸 (PEP)",
+        carbon: "C3",
+        phosphates: 1,
+        linkedStep: 9,
+        enzymeEn: "Pyruvate kinase (PK)",
+        enzymeJa: "ピルビン酸キナーゼ",
+        structureEn: "Unstable enol ester with highest phosphate transfer potential in biology.",
+        structureJa: "生体内で最高レベルのリン酸基転移ポテンシャル（高エネルギー）を持つエノール。",
+        fatesEn: "Irreversibly transfers phosphate to ADP, forming Pyruvate (+2 ATP).",
+        fatesJa: "不可逆的にADPへリン酸を渡し、ピルビン酸とATPを生成（+2 ATP）。",
+        pearlEn: "Phosphorylated and inhibited by Glucagon/PKA in liver during fasting.",
+        pearlJa: "空腹時はグルカゴン/PKAにより肝型PKがリン酸化され不活性化されます。",
+        svgType: "triose-enol"
+      },
+      {
+        id: "pyr",
+        nameEn: "Pyruvate",
+        nameJa: "ピルビン酸",
+        carbon: "C3",
+        phosphates: 0,
+        linkedStep: 9,
+        enzymeEn: "PDH / LDH / PC / ALT",
+        enzymeJa: "PDH / LDH / ピルビン酸カルボキシラーゼ / ALT",
+        structureEn: "C3 alpha-keto acid (CH3-CO-COO-). Final product of aerobic glycolysis.",
+        structureJa: "C3のα-ケト酸（CH3-CO-COO-）。好気的解糖の最終産物。",
+        fatesEn: "Acetyl-CoA (PDH/TCA), Lactate (LDH/anaerobic), Oxaloacetate (PC/gluconeogenesis), Alanine (ALT).",
+        fatesJa: "アセチルCoA（TCA回路へ）、乳酸（嫌気解糖）、オキサロ酢酸（糖新生）、アラニン（ALT）。",
+        pearlEn: "4 Fates of Pyruvate is one of the most tested USMLE biochemistry concepts.",
+        pearlJa: "「ピルビン酸の4つの運命」は医師国家試験・USMLEで最頻出のテーマです。",
+        svgType: "keto-acid-0p"
+      },
+      {
+        id: "lac",
+        nameEn: "L-Lactate",
+        nameJa: "L-乳酸",
+        carbon: "C3",
+        phosphates: 0,
+        linkedStep: 9,
+        enzymeEn: "Lactate dehydrogenase (LDH)",
+        enzymeJa: "乳酸脱水素酵素",
+        structureEn: "Reduced hydroxy-acid (CH3-CHOH-COO-).",
+        structureJa: "ピルビン酸のC=Oが還元されたヒドロキシ酸（CH3-CHOH-COO-）。",
+        fatesEn: "Exported to blood; taken up by liver to regenerate glucose (Cori cycle).",
+        fatesJa: "血中に放出され、肝臓に取り込まれて糖新生により再利用（コリ回路）。",
+        pearlEn: "Homolactic fermentation regenerates NAD+ required for GAPDH to sustain glycolysis.",
+        pearlJa: "解糖系GAPDHに必要なNAD+を再生するためにピルビン酸を乳酸へ還元します。",
+        svgType: "hydroxy-acid-0p"
+      }
+    ];
+
     // --- Clinical Cases Dataset ---
     const clinicalCases = [
       {
@@ -1434,12 +1753,13 @@
     let currentPathway = 'glycolysis';
     let currentStepIndex = 0;
     let hintLevel = 'blind';
-    let currentLang = 'en';
+    let currentLang = 'ja';
     let appMode = 'learn'; // Default to visual input learn!
     let userTyped = '';
     let currentCursorPos = 0;
     let comboStreak = 0;
     let currentCaseIndex = 0;
+    let currentInspectorMolId = 'glc'; // Default selected in inspector
 
     // --- DOM Cache ---
     let inputSpell, spellingSkeleton, feedbackMessage, currentEnzymeName, badgeStepNumber;
@@ -1465,6 +1785,168 @@
     function getCurrentStep() {
       const data = getDataset();
       return data[currentStepIndex] || data[0];
+    }
+
+    // --- NEW: RENDER IN-PLACE MOLECULE INSPECTOR ---
+    function renderMoleculePalette() {
+      const palette = document.getElementById('molecule-palette-bar');
+      if (!palette) return;
+      palette.innerHTML = '';
+
+      inspectorMolecules.forEach(mol => {
+        const isSelected = (mol.id === currentInspectorMolId);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => selectInspectorMolecule(mol.id);
+
+        if (isSelected) {
+          btn.className = "px-3 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-black text-xs shrink-0 shadow-lg border border-cyan-400 transition-all scale-105";
+        } else {
+          btn.className = "px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs shrink-0 border border-slate-800 hover:border-slate-700 transition-all";
+        }
+
+        const isJa = (currentLang === 'ja');
+        btn.innerHTML = `<span>${isJa ? mol.nameJa.split(' ')[0] : mol.nameEn.split(' ')[0]}</span> <span class="text-[9px] font-mono opacity-80">${mol.carbon}</span>`;
+        palette.appendChild(btn);
+      });
+    }
+
+    function selectInspectorMolecule(molId) {
+      currentInspectorMolId = molId;
+      renderMoleculePalette();
+      renderInspectorCard();
+      playTone(480, 'sine', 0.05, 0.08);
+    }
+
+    function renderInspectorCard() {
+      const mol = inspectorMolecules.find(m => m.id === currentInspectorMolId) || inspectorMolecules[0];
+      const isJa = (currentLang === 'ja');
+
+      const nameEl = document.getElementById('insp-mol-name');
+      const jaEl = document.getElementById('insp-mol-ja');
+      const badgePEl = document.getElementById('insp-mol-badge-p');
+      const carbonPill = document.getElementById('selected-carbon-pill');
+      const enzymeEl = document.getElementById('insp-prop-enzyme');
+      const structEl = document.getElementById('insp-prop-structure');
+      const fatesEl = document.getElementById('insp-prop-fates');
+      const pearlEl = document.getElementById('insp-prop-pearl');
+      const svgContainer = document.getElementById('insp-svg-container');
+      const svgCaption = document.getElementById('insp-svg-caption');
+
+      if (nameEl) nameEl.textContent = isJa ? mol.nameEn : mol.nameEn;
+      if (jaEl) jaEl.textContent = isJa ? mol.nameJa : mol.nameJa;
+      if (carbonPill) carbonPill.textContent = `${mol.carbon} (${mol.phosphates} Phosphate)`;
+
+      if (badgePEl) {
+        if (mol.phosphates === 0) {
+          badgePEl.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700";
+          badgePEl.textContent = "0 Phosphate";
+        } else if (mol.phosphates === 1) {
+          badgePEl.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40";
+          badgePEl.textContent = "1 Phosphate (Mono-P)";
+        } else {
+          badgePEl.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40";
+          badgePEl.textContent = "2 Phosphates (Bis-P)";
+        }
+      }
+
+      if (enzymeEl) enzymeEl.textContent = isJa ? mol.enzymeJa : mol.enzymeEn;
+      if (structEl) structEl.textContent = isJa ? mol.structureJa : mol.structureEn;
+      if (fatesEl) fatesEl.textContent = isJa ? mol.fatesJa : mol.fatesEn;
+      if (pearlEl) pearlEl.textContent = isJa ? mol.pearlJa : mol.pearlEn;
+
+      // Render Dynamic Mini SVG
+      if (svgContainer) {
+        svgContainer.innerHTML = generateMoleculeSVG(mol.svgType);
+      }
+      if (svgCaption) {
+        svgCaption.textContent = `${mol.nameEn} • ${mol.carbon} • ${mol.phosphates} PO3(2-)`;
+      }
+    }
+
+    function generateMoleculeSVG(type) {
+      // Clean SVG vector diagrams showing carbon skeleton & phosphate positions
+      if (type === 'hexose-0p') {
+        return `
+          <svg viewBox="0 0 160 100" class="w-36 h-24">
+            <polygon points="80,18 120,40 120,75 80,92 40,75 40,40" fill="#0f172a" stroke="#38bdf8" stroke-width="2.5" />
+            <circle cx="80" cy="55" r="4" fill="#38bdf8" />
+            <text x="80" y="58" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle">C6H12O6</text>
+            <text x="35" y="32" fill="#94a3b8" font-size="9" font-family="monospace">CH2OH</text>
+          </svg>`;
+      } else if (type === 'hexose-1p') {
+        return `
+          <svg viewBox="0 0 160 100" class="w-36 h-24">
+            <polygon points="80,22 120,42 120,75 80,92 40,75 40,42" fill="#0f172a" stroke="#38bdf8" stroke-width="2.5" />
+            <line x1="40" y1="42" x2="25" y2="25" stroke="#38bdf8" stroke-width="2" />
+            <circle cx="20" cy="20" r="12" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" />
+            <text x="20" y="23" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle">P-6</text>
+            <text x="80" y="60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle">G6P</text>
+          </svg>`;
+      } else if (type === 'pentose-1p' || type === 'pentose-2p') {
+        const isBis = (type === 'pentose-2p');
+        return `
+          <svg viewBox="0 0 160 100" class="w-36 h-24">
+            <polygon points="80,25 118,52 102,88 58,88 42,52" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5" />
+            <line x1="42" y1="52" x2="25" y2="35" stroke="#f59e0b" stroke-width="2" />
+            <circle cx="20" cy="28" r="11" fill="#d97706" stroke="#f59e0b" stroke-width="1.5" />
+            <text x="20" y="31" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle">P-6</text>
+            ${isBis ? `
+              <line x1="118" y1="52" x2="135" y2="35" stroke="#f59e0b" stroke-width="2" />
+              <circle cx="140" cy="28" r="11" fill="#d97706" stroke="#f59e0b" stroke-width="1.5" />
+              <text x="140" y="31" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle">P-1</text>
+            ` : ''}
+            <text x="80" y="62" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle">${isBis ? 'F1,6BP' : 'F6P'}</text>
+          </svg>`;
+      } else if (type.includes('triose-2p')) {
+        return `
+          <svg viewBox="0 0 160 100" class="w-36 h-24">
+            <!-- 3 Carbon Chain -->
+            <circle cx="50" cy="55" r="8" fill="#334155" />
+            <line x1="58" y1="55" x2="72" y2="55" stroke="#64748b" stroke-width="3" />
+            <circle cx="80" cy="55" r="8" fill="#334155" />
+            <line x1="88" y1="55" x2="102" y2="55" stroke="#64748b" stroke-width="3" />
+            <circle cx="110" cy="55" r="8" fill="#334155" />
+            <!-- C1 and C3 Phosphates -->
+            <circle cx="50" cy="22" r="11" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" />
+            <line x1="50" y1="33" x2="50" y2="47" stroke="#38bdf8" stroke-width="2" />
+            <text x="50" y="25" fill="#fff" font-size="7.5" font-family="monospace" font-weight="bold" text-anchor="middle">P-1</text>
+            
+            <circle cx="110" cy="22" r="11" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" />
+            <line x1="110" y1="33" x2="110" y2="47" stroke="#38bdf8" stroke-width="2" />
+            <text x="110" y="25" fill="#fff" font-size="7.5" font-family="monospace" font-weight="bold" text-anchor="middle">P-3</text>
+            
+            <text x="80" y="85" fill="#38bdf8" font-size="10" font-family="monospace" text-anchor="middle">C1-C2-C3 (Bis-P)</text>
+          </svg>`;
+      } else {
+        // Linear C3 triose / pyruvate / lactate
+        return `
+          <svg viewBox="0 0 160 100" class="w-36 h-24">
+            <circle cx="45" cy="50" r="9" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+            <line x1="54" y1="50" x2="71" y2="50" stroke="#10b981" stroke-width="3" />
+            <circle cx="80" cy="50" r="9" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+            <line x1="89" y1="50" x2="106" y2="50" stroke="#10b981" stroke-width="3" />
+            <circle cx="115" cy="50" r="9" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+            
+            <text x="45" y="53" fill="#6ee7b7" font-size="8" font-family="monospace" text-anchor="middle">C1</text>
+            <text x="80" y="53" fill="#6ee7b7" font-size="8" font-family="monospace" text-anchor="middle">C2</text>
+            <text x="115" y="53" fill="#6ee7b7" font-size="8" font-family="monospace" text-anchor="middle">C3</text>
+
+            <text x="80" y="80" fill="#cbd5e1" font-size="10" font-family="monospace" text-anchor="middle">3-Carbon Backbone</text>
+          </svg>`;
+      }
+    }
+
+    function jumpToPracticeFromInspector() {
+      const mol = inspectorMolecules.find(m => m.id === currentInspectorMolId);
+      if (mol) {
+        currentPathway = 'glycolysis';
+        const sel = document.getElementById('select-pathway');
+        if (sel) sel.value = 'glycolysis';
+        currentStepIndex = mol.linkedStep;
+        switchAppMode('drill');
+        showToast((currentLang === 'ja') ? `🎯 ${mol.nameJa}の特訓を開始！` : `🎯 Practicing ${mol.nameEn}!`, true);
+      }
     }
 
     // --- Interactive Visual Learn Simulators ---
@@ -1618,6 +2100,10 @@
       safeText('btn-hint-clue', isJa ? '💡 ヒント' : '💡 Hint');
       safeText('btn-hint-reveal', isJa ? '👁️ 表示' : '👁️ Show');
       safeText('btn-next-case', isJa ? '次の症例 ➔' : 'Next Case ➔');
+      safeText('title-mol-selector', isJa ? 'インタラクティブ分子エクスプローラー' : 'Interactive Molecule Inspector');
+      safeText('sub-mol-selector', isJa ? 'タップした分子の構造変化・リン酸位置・代謝の行き先をその場で確認' : 'Inspect structure, phosphate positions, and metabolic fates in place');
+      safeText('label-insp-jump', isJa ? 'この分子を特訓' : 'Practice This');
+      safeText('insp-label-pearl', isJa ? '臨床・試験ハイライト（Clinical & Board High-Yield）' : 'Clinical & Board High-Yield');
 
       if (inputSpell) {
         inputSpell.placeholder = isJa ? 'スペルを入力、または下のキーをタップ...' : 'Type spelling or tap keys below...';
@@ -1687,6 +2173,10 @@
       if (comboMeter) comboMeter.textContent = comboStreak;
 
       renderSkeletonTiles(targetName);
+
+      // Render Visual Learn Inspector
+      renderMoleculePalette();
+      renderInspectorCard();
 
       if (appMode === 'explore') renderExploreView();
       if (appMode === 'molecular') renderMolecularScene();
@@ -2150,7 +2640,7 @@
     // --- Defensive Initialization ---
     function initApp() {
       cacheDom();
-      let preferredLang = 'ja'; // Default to Japanese as requested for visual learn
+      let preferredLang = 'ja';
       try {
         const saved = localStorage.getItem('bp_clean_lang');
         if (saved === 'ja' || saved === 'en') preferredLang = saved;
