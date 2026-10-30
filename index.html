@@ -6,10 +6,10 @@
   <title>BioPathway Master | 代謝経路＆スペル完全攻略</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Google Fonts: Noto Sans JP (日本語標準) & JetBrains Mono (スペル・英数用) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -17,8 +17,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
+            sans: ['"Noto Sans JP"', '"Hiragino Sans"', '"Hiragino Kaku Gothic ProN"', '"Yu Gothic UI"', 'Meiryo', 'sans-serif'],
+            mono: ['"JetBrains Mono"', '"BIZ UDPGothic"', 'Consolas', 'monospace'],
           },
           colors: {
             bio: {
@@ -40,6 +40,13 @@
     }
   </script>
   <style>
+    /* 日本語フォントのレンダリング向上 */
+    body {
+      font-feature-settings: "palt" 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -66,14 +73,14 @@
     }
 
     .glass-panel {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-900">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-900 tracking-normal">
 
   <!-- ==================== HEADER ==================== -->
   <header class="glass-panel sticky top-0 z-40 border-b border-slate-800 px-4 py-3 sm:px-6">
@@ -85,7 +92,7 @@
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-emerald-400 via-teal-200 to-cyan-400 bg-clip-text text-transparent">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-emerald-400 via-teal-200 to-cyan-400 bg-clip-text text-transparent">
               BioPathway Master
             </h1>
             <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">MVP</span>
@@ -101,17 +108,17 @@
           <button id="btn-glycolysis" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold shadow transition-all">
             解糖系 (Glycolysis)
           </button>
-          <button id="btn-tca" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all">
+          <button id="btn-tca" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-medium">
             クエン酸回路 (TCA)
           </button>
         </div>
 
         <!-- Mode Toggle -->
         <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
-          <button id="btn-mode-spell" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow">
+          <button id="btn-mode-spell" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow font-medium">
             ✍️ スペル特訓
           </button>
-          <button id="btn-mode-explore" class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200">
+          <button id="btn-mode-explore" class="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 font-medium">
             🔍 経路閲覧
           </button>
         </div>
@@ -134,7 +141,7 @@
     <section class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
       <!-- Energy Meter Dashboard -->
       <div class="glass-panel p-4 rounded-2xl">
-        <h2 class="text-xs font-semibold text-slate-400 tracking-wider uppercase mb-3 flex items-center justify-between">
+        <h2 class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-3 flex items-center justify-between">
           <span>⚡ 収支メーター (Net Balance)</span>
           <span id="label-pathway-title" class="text-emerald-400 font-mono">Glycolysis</span>
         </h2>
@@ -161,11 +168,11 @@
       <!-- Pathway Stepper Flow -->
       <div class="glass-panel p-4 rounded-2xl flex-1 flex flex-col min-h-[460px]">
         <div class="flex items-center justify-between mb-3">
-          <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <span>🧬 代謝フロー一覧</span>
             <span id="step-count-badge" class="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-slate-300 font-mono">Step 1/10</span>
           </h2>
-          <span class="text-[11px] text-slate-500">クリックで詳細表示</span>
+          <span class="text-[11px] text-slate-400">クリックで詳細表示</span>
         </div>
 
         <div id="pathway-flow-container" class="flex-1 overflow-y-auto space-y-2 pr-1 max-h-[520px]">
@@ -181,17 +188,17 @@
       <div class="glass-panel p-4 rounded-2xl flex items-center justify-between gap-4 flex-wrap">
         <div class="flex items-center space-x-4">
           <div>
-            <div class="text-[10px] uppercase font-semibold text-slate-400">Score</div>
-            <div id="hud-score" class="text-2xl font-black font-mono text-white">0</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Score</div>
+            <div id="hud-score" class="text-2xl font-bold font-mono text-white">0</div>
           </div>
           <div class="h-8 w-px bg-slate-800"></div>
           <div>
-            <div class="text-[10px] uppercase font-semibold text-slate-400">Combo</div>
-            <div id="hud-combo" class="text-2xl font-black font-mono text-emerald-400">0🔥</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Combo</div>
+            <div id="hud-combo" class="text-2xl font-bold font-mono text-emerald-400">0🔥</div>
           </div>
           <div class="h-8 w-px bg-slate-800"></div>
           <div>
-            <div class="text-[10px] uppercase font-semibold text-slate-400">Progress</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Progress</div>
             <div id="hud-progress-text" class="text-lg font-bold font-mono text-slate-300">10%</div>
           </div>
         </div>
@@ -214,25 +221,25 @@
         <div>
           <!-- Reaction Context (From -> To) -->
           <div class="flex items-center gap-2 text-xs font-mono mb-4 text-slate-400">
-            <span class="px-2 py-1 rounded bg-slate-800 text-slate-300" id="step-number-tag">STEP 1</span>
-            <span id="prev-compound-badge" class="text-slate-400 truncate max-w-[200px]">Start of Pathway</span>
+            <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-bold" id="step-number-tag">STEP 1</span>
+            <span id="prev-compound-badge" class="text-slate-300 truncate max-w-[200px] font-medium">Start of Pathway</span>
             <span class="text-emerald-400">➔</span>
-            <span class="text-emerald-300 font-semibold" id="target-placeholder">??? [TARGET]</span>
+            <span class="text-emerald-300 font-bold" id="target-placeholder">??? [TARGET]</span>
           </div>
 
           <!-- Step Question & Clues -->
           <div class="mb-6">
             <div class="flex items-baseline justify-between mb-2">
-              <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest" id="question-label">分子の正式スペルを入力</span>
-              <span id="carbon-badge" class="px-2 py-0.5 text-xs font-mono rounded bg-slate-800 text-slate-300 border border-slate-700">C6</span>
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider" id="question-label">分子の正式スペルを入力</span>
+              <span id="carbon-badge" class="px-2.5 py-0.5 text-xs font-mono font-bold rounded bg-slate-800 text-slate-300 border border-slate-700">C6</span>
             </div>
             
-            <h3 id="target-japanese-name" class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
+            <h3 id="target-japanese-name" class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2 leading-snug">
               グルコース
             </h3>
             
-            <p id="step-enzyme-info" class="text-sm text-slate-300 flex items-center gap-2">
-              <span class="text-slate-500">触媒酵素:</span>
+            <p id="step-enzyme-info" class="text-sm text-slate-300 flex items-center gap-2 flex-wrap">
+              <span class="text-slate-400">触媒酵素:</span>
               <span class="font-medium text-teal-300 bg-teal-950/60 px-2.5 py-0.5 rounded-md border border-teal-800/40">
                 ヘキソキナーゼ / グルコキナーゼ
               </span>
@@ -241,11 +248,11 @@
 
           <!-- Spelling Assist / Ghost letters -->
           <div class="mb-4">
-            <div class="text-[11px] text-slate-400 mb-1 flex items-center justify-between">
-              <span>スペルガイド（文字数）:</span>
-              <span id="hint-letter-count" class="font-mono text-slate-500">7 letters</span>
+            <div class="text-[11px] text-slate-400 mb-1.5 flex items-center justify-between">
+              <span class="font-medium">スペルガイド（文字数）:</span>
+              <span id="hint-letter-count" class="font-mono text-slate-400">7 letters</span>
             </div>
-            <div id="spelling-skeleton" class="font-mono text-xl sm:text-2xl tracking-widest text-slate-500 flex flex-wrap gap-1 items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <div id="spelling-skeleton" class="font-mono text-xl sm:text-2xl tracking-widest text-slate-500 flex flex-wrap gap-1.5 items-center bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
               <!-- Ghost text filled dynamically -->
             </div>
           </div>
@@ -260,8 +267,8 @@
                 autocorrect="off" 
                 autocapitalize="off" 
                 spellcheck="false"
-                placeholder="Type spelling in English (e.g., Glucose)..."
-                class="w-full bg-slate-900 text-white font-mono text-lg sm:text-xl px-4 py-3.5 rounded-xl border-2 border-slate-700 focus:border-emerald-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all placeholder:text-slate-600"
+                placeholder="英名スペルを入力（例: Glucose）..."
+                class="w-full bg-slate-900 text-white font-mono text-lg sm:text-xl px-4 py-3.5 rounded-xl border-2 border-slate-700 focus:border-emerald-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 transition-all placeholder:text-slate-500 placeholder:font-sans"
               />
               <button 
                 type="submit" 
@@ -273,35 +280,34 @@
             </div>
           </form>
 
-          <!-- On-screen Quick Character Helpers (for Greek letters, hyphens, numbers) -->
+          <!-- On-screen Quick Character Helpers -->
           <div class="flex items-center gap-1.5 flex-wrap mb-4 text-xs font-mono text-slate-300">
-            <span class="text-slate-500 text-[11px]">クイック挿入:</span>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">α</button>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">-</button>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">1,6</button>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">1,3</button>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">bisphosphate</button>
-            <button class="quick-char-btn px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700">phosphate</button>
+            <span class="text-slate-400 text-[11px] font-sans font-medium">クイック挿入:</span>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">α</button>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">-</button>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">1,6</button>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">1,3</button>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">bisphosphate</button>
+            <button class="quick-char-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors">phosphate</button>
           </div>
 
           <!-- Feedback Toast / Typo Diagnostic -->
           <div id="feedback-panel" class="min-h-[50px] transition-all">
-            <!-- Dynamic feedback or encouragement -->
-            <div id="feedback-content" class="text-sm p-3 rounded-xl hidden"></div>
+            <div id="feedback-content" class="text-sm p-3.5 rounded-xl hidden font-medium"></div>
           </div>
         </div>
 
-        <!-- Clinical Pearl / High-Yield Box (USMLE & 医師国試) -->
-        <div class="mt-6 pt-5 border-t border-slate-800/80">
+        <!-- Clinical Pearl / High-Yield Box -->
+        <div class="mt-6 pt-5 border-t border-slate-800">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
               <span>💡 臨床パール＆国試・USMLE頻出ポイント</span>
             </span>
-            <button id="toggle-pearl-btn" class="text-xs text-slate-400 hover:text-slate-200">
+            <button id="toggle-pearl-btn" class="text-xs text-slate-400 hover:text-slate-200 font-medium">
               表示切替
             </button>
           </div>
-          <div id="clinical-pearl-body" class="bg-amber-950/20 border border-amber-500/20 rounded-xl p-3.5 text-xs sm:text-sm text-amber-200/90 leading-relaxed">
+          <div id="clinical-pearl-body" class="bg-amber-950/20 border border-amber-500/25 rounded-xl p-4 text-xs sm:text-sm text-amber-100 leading-relaxed font-normal">
             <!-- Injected dynamically -->
           </div>
         </div>
@@ -318,36 +324,36 @@
       <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto mb-4 animate-bounce">
         🏆
       </div>
-      <h3 class="text-2xl font-black text-center text-white mb-1">Pathway Cleared!</h3>
-      <p id="modal-subtext" class="text-xs text-center text-slate-400 mb-6">全ステップのスペルを完走しました</p>
+      <h3 class="text-2xl font-bold text-center text-white mb-1">代謝経路クリア！</h3>
+      <p id="modal-subtext" class="text-xs text-center text-slate-400 mb-6 font-medium">全ステップのスペルを完走しました</p>
 
       <div class="grid grid-cols-3 gap-3 mb-6 text-center font-mono">
         <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
-          <div class="text-[10px] text-slate-400 uppercase">Total Score</div>
-          <div id="modal-score" class="text-xl font-black text-emerald-400">1250</div>
+          <div class="text-[10px] text-slate-400 uppercase font-sans font-bold">Total Score</div>
+          <div id="modal-score" class="text-xl font-bold text-emerald-400">1250</div>
         </div>
         <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
-          <div class="text-[10px] text-slate-400 uppercase">Max Combo</div>
-          <div id="modal-combo" class="text-xl font-black text-amber-400">10🔥</div>
+          <div class="text-[10px] text-slate-400 uppercase font-sans font-bold">Max Combo</div>
+          <div id="modal-combo" class="text-xl font-bold text-amber-400">10🔥</div>
         </div>
         <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
-          <div class="text-[10px] text-slate-400 uppercase">Mistakes</div>
-          <div id="modal-mistakes" class="text-xl font-black text-rose-400">1</div>
+          <div class="text-[10px] text-slate-400 uppercase font-sans font-bold">Mistakes</div>
+          <div id="modal-mistakes" class="text-xl font-bold text-rose-400">1</div>
         </div>
       </div>
 
       <div class="mb-6">
-        <h4 class="text-xs font-semibold text-slate-400 uppercase mb-2">間違えやすかったスペル復習</h4>
+        <h4 class="text-xs font-bold text-slate-300 uppercase mb-2">間違えやすかったスペルの復習</h4>
         <div id="modal-mistake-list" class="max-h-36 overflow-y-auto space-y-1.5 text-xs font-mono bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
           <!-- Injected dynamically -->
         </div>
       </div>
 
       <div class="flex gap-3">
-        <button id="modal-next-btn" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20">
+        <button id="modal-next-btn" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 font-sans">
           次の回路へ進む (TCA) ➔
         </button>
-        <button id="modal-close-btn" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl transition-all">
+        <button id="modal-close-btn" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl transition-all font-sans">
           閉じる
         </button>
       </div>
@@ -360,7 +366,6 @@
      * BioPathway Master - Core Data & Logic
      */
 
-    // Audio synthesizer for sound effects (Web Audio API)
     class SoundEngine {
       constructor() {
         this.ctx = null;
@@ -379,8 +384,8 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, now); // D5
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
         gain.gain.setValueAtTime(0.15, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
         osc.connect(gain);
@@ -407,7 +412,7 @@
       playFanfare() {
         if (!this.enabled) return;
         this.init();
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+        const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, idx) => {
           const now = this.ctx.currentTime + (idx * 0.1);
           const osc = this.ctx.createOscillator();
@@ -438,7 +443,7 @@
         enzymeEn: "Hexokinase / Glucokinase",
         energy: { atp: -1, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: true,
-        pearl: "【不可逆・第1の関門】ヘキソキナーゼはKmが低く大半の組織で機能。肝臓・膵β細胞のグルコキナーゼはKmが高く血糖値センサーとして働く。MODY2（若年発症成人型糖尿病）の原因遺伝子。"
+        pearl: "【不可逆・第1の関門】ヘキソキナーゼはKmが低く（基質親和性が高く）大半の組織で機能。一方、肝臓や膵β細胞にあるグルコキナーゼはKmが高く食後の血糖値センサーとして働く。MODY2（若年発症成人型糖尿病）の原因遺伝子としても有名。"
       },
       {
         step: 2,
@@ -450,7 +455,7 @@
         enzymeEn: "Phosphohexose isomerase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【代謝の分岐点】解糖系だけでなく、グリコーゲン合成経路やペントースリン酸回路（NADPH産生）への分岐点となる重要中間体。"
+        pearl: "【代謝の重要ハブ】解糖系だけでなく、グリコーゲン合成経路やペントースリン酸回路（NADPH産生と核酸合成）への分岐点となる要の分子。"
       },
       {
         step: 3,
@@ -462,7 +467,7 @@
         enzymeEn: "Phosphofructokinase-1 (PFK-1)",
         energy: { atp: -1, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: true,
-        pearl: "【最重要律速段階（Rate-limiting Step）】PFK-1はAMPやフルクトース-2,6-ビスリン酸（F2,6BP）で強力に活性化され、ATPやクエン酸でアロステリック阻害を受ける。"
+        pearl: "【最重要律速段階（Rate-limiting Step）】PFK-1はAMPやフルクトース-2,6-ビスリン酸（F2,6BP）で強力に活性化され、高ATPやクエン酸でアロステリック阻害を受ける。"
       },
       {
         step: 4,
@@ -474,7 +479,7 @@
         enzymeEn: "Aldolase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【開裂反応】C6の六炭糖が2つの三炭糖リン酸（DHAPとG3P）に切断される。アルドラーゼB欠損は遺伝性フルクトース不耐症（嘔吐・低血糖・肝腫大）を引き起こす。"
+        pearl: "【開裂反応】C6の六炭糖が2つの三炭糖リン酸（DHAPとG3P）に切断される。アルドラーゼB欠損は遺伝性フルクトース不耐症（乳幼児の果糖摂取による低血糖・嘔吐・肝腫大）を引き起こす。"
       },
       {
         step: 5,
@@ -486,7 +491,7 @@
         enzymeEn: "Triose phosphate isomerase (TPI)",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【異性化平衡】DHAP（ジヒドロキシアセトンリン酸）とGAPは平衡状態にあるが、次の反応でGAPが消費されるためすべてGAPへと変換され、ここから分子は「×2」で進む。"
+        pearl: "【異性化平衡】DHAP（ジヒドロキシアセトンリン酸）とGAPは平衡状態にあるが、続くGAPDH反応でGAPが消費されるため、すべてGAP側へと流れる。これ以降は分子数が「×2」となる。"
       },
       {
         step: 6,
@@ -498,7 +503,7 @@
         enzymeEn: "GAPDH",
         energy: { atp: 0, nadh: 2, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【NADH産生 & ヒ素中毒】高エネルギーアシルリン酸結合を獲得。ヒ素（アルセネート）はリン酸と競合して結合し、ATPを産生させずに反応を進めてしまうため毒性を示す。"
+        pearl: "【NADH産生 & ヒ素中毒】高エネルギーアシルリン酸結合を獲得。ヒ素（アルセネート）は無機リン酸（Pi）と拮抗して取り込まれ、ATPを作らせずに反応を空回りさせるため猛毒となる。"
       },
       {
         step: 7,
@@ -510,7 +515,7 @@
         enzymeEn: "Phosphoglycerate kinase",
         energy: { atp: 2, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【基質レベルのリン酸化（Substrate-level phosphorylation）】ミトコンドリアの電子伝達系を介さずに、直接ADPからATPが2分子産生（回収期突入）される。"
+        pearl: "【基質レベルのリン酸化（Substrate-level phosphorylation）】ミトコンドリアの電子伝達系を介さず、ADPからATPが直接2分子回収される。"
       },
       {
         step: 8,
@@ -522,7 +527,7 @@
         enzymeEn: "Phosphoglycerate mutase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【リン酸基の分子内転移】C3位にあったリン酸基がC2位に移動し、次の高エネルギー脱水反応への準備を整える。"
+        pearl: "【リン酸基の分子内転移】C3位にあったリン酸基がC2位にシフトし、次の高エネルギー脱水反応（エノラーゼ）への下地を作る。"
       },
       {
         step: 9,
@@ -534,7 +539,7 @@
         enzymeEn: "Enolase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【フッ化物による阻害】採血スピッツ（血糖測定用灰キャップ）に含まれるフッ化ナトリウム（NaF）はエノラーゼを阻害し、採血後の赤血球による解糖（血糖値低下）を防止する。"
+        pearl: "【採血検査での重要知識】採血スピッツ（血糖用灰キャップ）に含まれるフッ化ナトリウム（NaF）はエノラーゼを阻害し、採血後の赤血球による解糖（血糖値低下）を防止する。"
       },
       {
         step: 10,
@@ -546,7 +551,7 @@
         enzymeEn: "Pyruvate kinase",
         energy: { atp: 2, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: true,
-        pearl: "【不可逆・ATP回収】ピルビン酸キナーゼ欠乏症（赤血球PK欠乏症）は、ATP枯渇によって赤血球膜が破綻し、先天性非球状赤血球性溶血性貧血を引き起こす（国試・USMLE頻出）。"
+        pearl: "【不可逆・ATP産生】赤血球ピルビン酸キナーゼ（PK）欠損症は、ATP枯渇によって赤血球膜が破綻し、先天性非球状赤血球性溶血性貧血を引き起こす（国試・USMLE頻出疾患）。"
       }
     ];
 
@@ -562,7 +567,7 @@
         enzymeEn: "Citrate synthase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: true,
-        pearl: "【回路の起点】アセチルCoA (C2) とオキサロ酢酸 (C4) が不可逆的に縮合。細胞質に輸送されたクエン酸はアセチルCoAに再変換され、脂肪酸合成の原料となる。"
+        pearl: "【回路の起点】アセチルCoA (C2) とオキサロ酢酸 (C4) が不可逆的に縮合。細胞質に輸送されたクエン酸はアセチルCoAへと再分解され、脂肪酸合成の原料として利用される。"
       },
       {
         step: 2,
@@ -574,7 +579,7 @@
         enzymeEn: "Aconitase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【立体特異的異性化】中間体 cis-アコニット酸を経由。アコニターゼは鉄-硫黄クラスター（Fe-S）を持ち、殺鼠剤フルオロ酢酸（モノフルオロ酢酸）により特異的に不可逆阻害される。"
+        pearl: "【立体特異的異性化】中間体 cis-アコニット酸を経由。アコニターゼは鉄-硫黄クラスター（Fe-S）を持ち、殺鼠剤モノフルオロ酢酸（フルオロクエン酸に変換後）により不可逆阻害される。"
       },
       {
         step: 3,
@@ -586,7 +591,7 @@
         enzymeEn: "Isocitrate dehydrogenase",
         energy: { atp: 0, nadh: 1, fadh2: 0, co2: 1 },
         isIrreversible: true,
-        pearl: "【TCA回路の最大律速酵素】ADPで強力に活性化、ATPとNADHで阻害。1回目の脱炭酸（CO2放出）とNADH産生。IDH1/2変異は神経膠腫（グリオーマ）やAMLで高頻度に見られる。"
+        pearl: "【TCA回路の最大律速段階】ADPで強力に活性化、ATPとNADHで阻害。1回目の脱炭酸（CO2放出）とNADH産生。IDH1/2変異は神経膠腫（グリオーマ）や急性骨髄性白血病（AML）で重要。"
       },
       {
         step: 4,
@@ -598,7 +603,7 @@
         enzymeEn: "alpha-Ketoglutarate dehydrogenase",
         energy: { atp: 0, nadh: 1, fadh2: 0, co2: 1 },
         isIrreversible: true,
-        pearl: "【ビタミンB1依存・重要補酵素】ピルビン酸脱水素酵素（PDH）と同様に5つの補酵素（TDP/B1, FAD/B2, NAD/B3, CoA/B5, リポ酸）を要求。ビタミンB1欠乏（Wernicke脳症・脚気）で停止。"
+        pearl: "【ビタミンB1依存】PDH複合体と同様に5つの補酵素（TDP/B1, FAD/B2, NAD/B3, CoA/B5, リポ酸）を要求。ビタミンB1欠乏（Wernicke脳症・脚気）で回路が停止する。"
       },
       {
         step: 5,
@@ -610,7 +615,7 @@
         enzymeEn: "Succinyl-CoA synthetase",
         energy: { atp: 1, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【TCA唯一の基質レベルリン酸化】チオエステル結合の加水分解エネルギーを利用してGDPからGTP（ATPと等価）を1分子直接産生。"
+        pearl: "【TCA唯一の基質レベルリン酸化】チオエステル結合の高エネルギーを利用し、GDPからGTP（ATPと等価）を1分子直接産生する。"
       },
       {
         step: 6,
@@ -622,7 +627,7 @@
         enzymeEn: "Succinate dehydrogenase (Complex II)",
         energy: { atp: 0, nadh: 0, fadh2: 1, co2: 0 },
         isIrreversible: false,
-        pearl: "【電子伝達系との直結】ミトコンドリア内膜に直接埋め込まれている唯一のTCA酵素（呼吸鎖複合体IIそのもの）。マロン酸によって競合阻害を受ける。"
+        pearl: "【電子伝達系との結合】ミトコンドリア内膜に直接埋め込まれている唯一のTCA酵素（呼吸鎖複合体IIそのもの）。マロン酸による競合阻害が有名。"
       },
       {
         step: 7,
@@ -634,7 +639,7 @@
         enzymeEn: "Fumarase",
         energy: { atp: 0, nadh: 0, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【立体特異的水和】トランス型二重結合に水分子（H2O）が付加し、L-リンゴ酸が生成される。リンゴ酸-アスパラギン酸シャトルを通じて細胞質NADHの電子をミトコンドリアに運ぶ。"
+        pearl: "【立体特異的水和】トランス型二重結合に水分子（H2O）が付加し、L-リンゴ酸が生成。リンゴ酸-アスパラギン酸シャトルを通じて細胞質NADHの電子をミトコンドリア内へ運ぶ。"
       },
       {
         step: 8,
@@ -646,13 +651,13 @@
         enzymeEn: "Malate dehydrogenase",
         energy: { atp: 0, nadh: 1, fadh2: 0, co2: 0 },
         isIrreversible: false,
-        pearl: "【回路の再生・糖新生】3回目のNADH産生によりオキサロ酢酸が再生し、次のアセチルCoAを受け入れる。空腹時の糖新生（PEPCKによるPEPへの変換）やアミノ酸代謝とも緊密に連携。"
+        pearl: "【回路の再生】3回目のNADH産生によりオキサロ酢酸が再生し、次のアセチルCoAを受け入れる。空腹時の糖新生（PEPCKによるPEPへの変換）やアミノ酸代謝（AST反応）とも緊密に連携。"
       }
     ];
 
-    // App State
-    let currentPathway = 'glycolysis'; // 'glycolysis' | 'tca'
-    let currentMode = 'spell'; // 'spell' | 'explore'
+    // State
+    let currentPathway = 'glycolysis';
+    let currentMode = 'spell';
     let currentStepIndex = 0;
     let score = 0;
     let combo = 0;
@@ -706,7 +711,6 @@
     const modalNextBtn = document.getElementById('modal-next-btn');
     const modalCloseBtn = document.getElementById('modal-close-btn');
 
-    // Utility: normalize strings for tolerant spell checking
     function normalizeStr(str) {
       return str
         .toLowerCase()
@@ -720,7 +724,6 @@
       return currentPathway === 'glycolysis' ? glycolysisData : tcaData;
     }
 
-    // Update Energy Balances dynamically
     function updateEnergyDashboard() {
       const data = getCurrentDataset();
       let totalAtp = 0;
@@ -742,7 +745,6 @@
       statCo2.textContent = (totalCo2 >= 0 ? '+' : '') + totalCo2;
     }
 
-    // Render Left Pathway Flow Items
     function renderPathwayFlow() {
       const data = getCurrentDataset();
       pathwayFlowContainer.innerHTML = '';
@@ -801,7 +803,7 @@
 
         if (item.isIrreversible) {
           const irrTag = document.createElement('span');
-          irrTag.className = 'px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] border border-amber-500/30';
+          irrTag.className = 'px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] border border-amber-500/30 font-sans font-bold';
           irrTag.textContent = '★不可逆';
           rightBadges.appendChild(irrTag);
         }
@@ -824,7 +826,6 @@
       });
     }
 
-    // Load step into the drill card
     function loadStep(index) {
       const data = getCurrentDataset();
       const current = data[index];
@@ -837,7 +838,7 @@
       labelPathwayTitle.textContent = currentPathway === 'glycolysis' ? 'Glycolysis' : 'TCA Cycle';
 
       if (index === 0) {
-        prevCompoundBadge.textContent = currentPathway === 'glycolysis' ? 'Blood Glucose (C6)' : 'Acetyl-CoA + Oxaloacetate';
+        prevCompoundBadge.textContent = currentPathway === 'glycolysis' ? '血糖（Glucose C6）' : 'アセチルCoA + オキサロ酢酸';
       } else {
         const prev = data[index - 1];
         prevCompoundBadge.textContent = isLangEn ? prev.nameEn : prev.nameJa;
@@ -845,15 +846,15 @@
 
       targetJapaneseName.textContent = isLangEn ? current.nameEn : current.nameJa;
       stepEnzymeInfo.innerHTML = `
-        <span class="text-slate-500">触媒酵素:</span>
+        <span class="text-slate-400">触媒酵素:</span>
         <span class="font-medium text-teal-300 bg-teal-950/60 px-2.5 py-0.5 rounded-md border border-teal-800/40">
           ${isLangEn ? current.enzymeEn : current.enzymeJa}
         </span>
-        ${current.isIrreversible ? '<span class="text-xs text-amber-400 font-semibold ml-1">★不可逆</span>' : ''}
+        ${current.isIrreversible ? '<span class="text-xs text-amber-400 font-bold ml-1">★不可逆</span>' : ''}
       `;
 
       const len = current.nameEn.length;
-      hintLetterCount.textContent = `${len} letters (最初の文字: ${current.nameEn.charAt(0)})`;
+      hintLetterCount.textContent = `${len} 文字 (先頭: ${current.nameEn.charAt(0)})`;
       
       renderSkeleton(inputSpell.value.trim(), current.nameEn);
 
@@ -868,7 +869,6 @@
       updateEnergyDashboard();
     }
 
-    // Render interactive skeleton letters based on user typing
     function renderSkeleton(userTyped, targetWord) {
       spellingSkeleton.innerHTML = '';
       const targetLetters = targetWord.split('');
@@ -891,7 +891,7 @@
             span.textContent = userLetters[i];
           }
         } else if (i === 0) {
-          span.className += ' bg-slate-800/80 border-slate-700 text-slate-300';
+          span.className += ' bg-slate-800/80 border-slate-700 text-slate-300 font-bold';
           span.textContent = char;
         } else {
           span.className += ' bg-slate-900 border-slate-800 text-slate-600';
@@ -902,14 +902,12 @@
       });
     }
 
-    // Input live typing listener
     inputSpell.addEventListener('input', (e) => {
       const data = getCurrentDataset();
       const current = data[currentStepIndex];
       renderSkeleton(e.target.value, current.nameEn);
     });
 
-    // Handle Form Submit (Check answer)
     formTyping.addEventListener('submit', (e) => {
       e.preventDefault();
       checkAnswer();
@@ -957,17 +955,17 @@
 
         let typoTip = "スペルを確認してください。";
         if (normUser.includes("diphosphate")) {
-          typoTip = "生化学の命名規則では2つの独立したリン酸基は「bisphosphate」を用います。";
+          typoTip = "生化学では独立した2つのリン酸基には「bisphosphate」を用います。";
         } else if (normUser.includes("oxaloacetate") && current.nameEn.includes("alpha")) {
-          typoTip = "分子の前後関係を確認してください。";
+          typoTip = "分子の順番を確認してください。";
         }
 
-        showFeedback(false, `不正解！ ${typoTip} 正解例: ${current.nameEn}`);
+        showFeedback(false, `不正解！ ${typoTip} 正解: ${current.nameEn}`);
       }
     }
 
     function showFeedback(isSuccess, message) {
-      feedbackContent.className = `text-xs sm:text-sm p-3 rounded-xl border flex items-center gap-2 ${
+      feedbackContent.className = `text-xs sm:text-sm p-3.5 rounded-xl border flex items-center gap-2 font-medium ${
         isSuccess 
           ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
           : 'bg-rose-950/60 border-rose-500/40 text-rose-300'
@@ -1005,7 +1003,7 @@
         mistakes.forEach(name => {
           const item = document.createElement('div');
           item.className = 'flex items-center justify-between py-1 px-2 border-b border-slate-800 last:border-0';
-          item.innerHTML = `<span class="text-slate-200">${name}</span> <span class="text-rose-400 text-[10px]">復習要</span>`;
+          item.innerHTML = `<span class="text-slate-200">${name}</span> <span class="text-rose-400 text-[10px] font-sans font-bold">要復習</span>`;
           modalMistakeList.appendChild(item);
         });
       }
@@ -1017,7 +1015,6 @@
       }
     }
 
-    // Modal Actions
     modalCloseBtn.addEventListener('click', () => {
       modalResult.classList.add('hidden');
     });
@@ -1031,19 +1028,17 @@
       }
     });
 
-    // Give Up button
     btnGiveUp.addEventListener('click', () => {
       const data = getCurrentDataset();
       const current = data[currentStepIndex];
       inputSpell.value = current.nameEn;
       renderSkeleton(current.nameEn, current.nameEn);
-      showFeedback(false, `正解のスペル: <strong>${current.nameEn}</strong>（参考にしてそのままEnterを押してください）`);
+      showFeedback(false, `正解: <strong>${current.nameEn}</strong>（そのままEnterキーを押してください）`);
       if (!mistakes.includes(current.nameEn)) {
         mistakes.push(current.nameEn);
       }
     });
 
-    // Restart button
     btnRestart.addEventListener('click', () => {
       currentStepIndex = 0;
       score = 0;
@@ -1055,7 +1050,6 @@
       loadStep(0);
     });
 
-    // Switch Pathway (Glycolysis <-> TCA)
     function switchPathway(pathway) {
       currentPathway = pathway;
       currentStepIndex = 0;
@@ -1065,10 +1059,10 @@
 
       if (pathway === 'glycolysis') {
         btnGlycolysis.className = 'px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold shadow transition-all';
-        btnTca.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all';
+        btnTca.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-medium';
       } else {
         btnTca.className = 'px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold shadow transition-all';
-        btnGlycolysis.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all';
+        btnGlycolysis.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all font-medium';
       }
 
       renderPathwayFlow();
@@ -1078,24 +1072,22 @@
     btnGlycolysis.addEventListener('click', () => switchPathway('glycolysis'));
     btnTca.addEventListener('click', () => switchPathway('tca'));
 
-    // Mode Toggle (Spell Drill vs Explore)
     btnModeSpell.addEventListener('click', () => {
       currentMode = 'spell';
-      btnModeSpell.className = 'px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow';
-      btnModeExplore.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200';
+      btnModeSpell.className = 'px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow font-medium';
+      btnModeExplore.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 font-medium';
       renderPathwayFlow();
       loadStep(currentStepIndex);
     });
 
     btnModeExplore.addEventListener('click', () => {
       currentMode = 'explore';
-      btnModeExplore.className = 'px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow';
-      btnModeSpell.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200';
+      btnModeExplore.className = 'px-2.5 py-1.5 rounded-lg bg-slate-800 text-emerald-400 shadow font-medium';
+      btnModeSpell.className = 'px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 font-medium';
       renderPathwayFlow();
       loadStep(currentStepIndex);
     });
 
-    // Sound toggle
     btnSound.addEventListener('click', () => {
       sound.enabled = !sound.enabled;
       btnSound.textContent = sound.enabled ? '🔊' : '🔇';
@@ -1104,7 +1096,6 @@
         : 'p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 hover:text-slate-400 text-sm transition-colors';
     });
 
-    // Language Toggle (JA <-> EN)
     btnLang.addEventListener('click', () => {
       isLangEn = !isLangEn;
       btnLang.textContent = isLangEn ? 'EN' : 'JA';
@@ -1112,7 +1103,6 @@
       loadStep(currentStepIndex);
     });
 
-    // Quick Character Insertion Buttons
     document.querySelectorAll('.quick-char-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const char = btn.textContent;
@@ -1127,7 +1117,6 @@
       });
     });
 
-    // Clinical Pearl Toggle visibility
     let isPearlVisible = true;
     togglePearlBtn.addEventListener('click', () => {
       isPearlVisible = !isPearlVisible;
@@ -1135,7 +1124,6 @@
       togglePearlBtn.textContent = isPearlVisible ? '非表示' : '表示';
     });
 
-    // Initial App Load
     window.onload = function() {
       renderPathwayFlow();
       loadStep(0);
